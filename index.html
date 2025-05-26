@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Micasita Multirubro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #fdd5eb;
+      color: #333;
+    }
+
+    .encabezado {
+      background-color: #f89cd7;
+      text-align: center;
+      padding: 20px 10px;
+    }
+
+    .encabezado h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+
+    .script {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.8rem;
+      color: #000;
+    }
+
+    .negrita {
+      font-weight: bold;
+      color: #333;
+      display: block;
+      margin-top: -10px;
+    }
+
+    .mensaje {
+      text-align: center;
+      max-width: 800px;
+      margin: 20px auto;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .catalogo {
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.5rem;
+      margin-top: 40px;
+    }
+
+    .productos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 30px;
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .producto {
+      text-align: center;
+    }
+
+    .imagen {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.15);
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    footer p {
+      margin-bottom: 10px;
+    }
+
+    .whatsapp {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #25D366;
+      border-radius: 50%;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .whatsapp img {
+      width: 40px;
+      height: 40px;
+    }
+  </style>
+</head>
+<body>
+  <header class="encabezado">
+    <h1><span class="script">Micasita</span> <span class="negrita">MULTIRUBRO</span></h1>
+  </header>
+
+  <section class="mensaje">
+    <p>Gracias por visitarnos 🧡</p>
+    <p>
+      En Micasita te damos la bienvenida con el corazón. Somos un emprendimiento multirubro que nació con mucho amor, con la idea de ofrecer un poquito de todo... y mucho de nosotros.
+    </p>
+    <p>
+      Sabemos que hoy en día el tiempo vale oro, por eso agradecemos de corazón que te hayas tomado un momento para conocernos. Cada visita, cada mensaje, cada compra y cada palabra de aliento nos impulsa a seguir creciendo.
+    </p>
+    <p>
+      Detrás de este espacio hay sueños, esfuerzo y muchas ganas de brindar lo mejor. Gracias por ser parte de esta aventura. ¡Micasita también es tu casita!
+    </p>
+  </section>
+
+  <h2 class="catalogo">CATÁLOGO</h2>
+
+  <section class="productos">
+    <div class="producto">
+      <img class="imagen" src="Imagenes/pava.jpg" alt="Producto 1" />
+      <p>Pava Electrica $25.500 </p>
+    </div>
+    <div class="producto">
+      <img class="imagen" src="Imagenes/manta.jpg" alt="Producto 2" />
+      <p>Manta polar $27.999</p>
+    </div>
+    <div class="producto">
+      <img class="imagen" src="Imagenes/Mate.jpg" alt="Producto 3" />
+      <p>Mate autocebante $6.999</p>
+    </div>
+    <div class="producto">
+      <img class="imagen" src="Imagenes/Botella termica.jpg" alt="Producto 4" />
+      <p>Botella termica $13.999</p>
+    </div>
+    <div class="producto">
+      <img class="imagen" src="Imagenes/Hojas 2.jpg" alt="Producto 5" />
+      <p>Hojas Exito de 480 $29.500 </p>
+    </div>
+    <div class="producto">
+      <img class="imagen" src="Imagenes/Cargador.jpg" alt="Producto 6" />
+      <p>Cargador de samngung $7.900</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>INSTAGRAM: MI.CASITA01</p>
+    <a href="https://wa.me/543533518390?text=Hola%20como%20estas%3F%20tengo%20una%20consulta" target="_blank" class="whatsapp">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" />
+    </a>
+  </footer>
+</body>
+</html>
