@@ -52,6 +52,32 @@
       margin-top: 40px;
     }
 
+    .categorias {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px auto 40px;
+      padding: 0 20px;
+    }
+
+    .categorias a {
+      background-color: #f89cd7;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: bold;
+      font-family: 'Montserrat', sans-serif;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .categorias a:hover {
+      background-color: #e277c3;
+      transform: scale(1.05);
+    }
+
     .productos {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -119,30 +145,66 @@
 
   <h2 class="catalogo">CATÁLOGO</h2>
 
+  <!-- Opciones del catálogo -->
+  <div class="categorias">
+    <a href="#padre">Día del Padre</a>
+    <a href="#ninos">Niños</a>
+    <a href="#utiles">Útiles</a>
+    <a href="#hogar">Cosas del hogar</a>
+    <a href="#varios">Varios</a>
+  </div>
+
+  <!-- Sección Día del Padre -->
+  <h3 id="padre" class="catalogo">Día del Padre</h3>
   <section class="productos">
     <div class="producto">
-      <img class="imagen" src="Imagenes/pava.jpg" alt="Producto 1" />
-      <p>Pava Electrica $25.500 </p>
-    </div>
-    <div class="producto">
-      <img class="imagen" src="Imagenes/manta.jpg" alt="Producto 2" />
-      <p>Manta polar $27.999</p>
-    </div>
-    <div class="producto">
-      <img class="imagen" src="Imagenes/Mate.jpg" alt="Producto 3" />
+      <img class="imagen" src="Imagenes/Mate.jpg" alt="Mate autocebante" />
       <p>Mate autocebante $6.999</p>
     </div>
     <div class="producto">
-      <img class="imagen" src="Imagenes/Botella termica.jpg" alt="Producto 4" />
-      <p>Botella termica $13.999</p>
+      <img class="imagen" src="Imagenes/Botella termica.jpg" alt="Botella térmica" />
+      <p>Botella térmica $13.999</p>
+    </div>
+  </section>
+
+  <!-- Sección Niños -->
+  <h3 id="ninos" class="catalogo">Niños</h3>
+  <section class="productos">
+    <!-- Agregá aquí los productos para niños -->
+  </section>
+
+  <!-- Sección Útiles -->
+  <h3 id="utiles" class="catalogo">Útiles</h3>
+  <section class="productos">
+    <div class="producto">
+      <img class="imagen" src="Imagenes/Hojas 2.jpg" alt="Hojas Exito" />
+      <p>Hojas Exito de 480 hojas $29.500</p>
     </div>
     <div class="producto">
-      <img class="imagen" src="Imagenes/Hojas 2.jpg" alt="Producto 5" />
-      <p>Hojas Exito de 480 $29.500 </p>
+      <img class="imagen" src="Imagenes/Hojas.jpg" alt="Hojas exito individuales">
+      <p>Hojas Exito de 96 hojas $9.999</p>
+    </div>
+  </section>
+
+  <!-- Sección Cosas del hogar -->
+  <h3 id="hogar" class="catalogo">Cosas del hogar</h3>
+  <section class="productos">
+    <div class="producto">
+      <img class="imagen" src="Imagenes/pava.jpg" alt="Pava eléctrica" />
+      <p>Pava Eléctrica $25.500</p>
     </div>
     <div class="producto">
-      <img class="imagen" src="Imagenes/Cargador.jpg" alt="Producto 6" />
-      <p>Cargador de samsung $7.900</p>
+      <img class="imagen" src="Imagenes/manta.jpg" alt="Manta polar" />
+      <p>Manta polar $27.999</p>
+    </div>
+  </section>
+
+  <!-- Sección Varios -->
+  <h3 id="varios" class="catalogo">Varios</h3>
+  <section class="productos">
+    <div class="producto">
+      <img class="imagen" src="Imagenes/Cargador.jpg" alt="Cargador Samsung" />
+      <p>Cargador de Samsung $7.900</p>
     </div>
   </section>
 
