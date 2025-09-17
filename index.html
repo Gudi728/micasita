@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Micasita Multirubro</title>
+  <link rel="stylesheet" href="estilos.css">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <style>
+    .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #1a1a1a;
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.8);
+      z-index: 1000;
+    }
+
+    .modal-contenido {
+      text-align: center;
+    }
+
+    .modal button {
+      margin-top: 15px;
+      background-color: #ff5722;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .modal button:hover {
+      background-color: #e64a19;
+    }
+
+    .oculto {
+      display: none;
+    }
+
+    /* Fondo semitransparente opcional detrás del modal */
+    .modal::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: -1;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <img src="imagenes/logo.jpg" alt="Logo" class="logo" onclick="irInicio()">
+    <nav>
+      <button onclick="mostrarVentana('sobre nosotros')">Sobre nosotros</button>
+      <button onclick="mostrarVentana('redes sociales')">Redes sociales</button>
+    </nav>
+  </header>
+<header class="encabezado">
+    <h1><span class="script">Micasita</span> <span class="negrita">MULTIRUBRO</span></h1>
+
+  <main class="menu-principal">
+    <section class="categorias">
+      <a href="electronica.html">Electronica</a>
+      <a href="Juguetes.html">Juguetes</a>
+      <a href="Utiles.html">Útiles</a>
+      <a href="Hogar.html">Hogar</a>
+      <a href="Bazar.html">Bazar</a>
+      <a href="Blanqueria.html">Blanqueria</a>
+      <a href="Freidoras.html">Freidoras de aire</a>
+      <a href="Drogueria.html">Drogueria</a>
+    </section>
+  </main>
+
+  <!-- Modales -->
+  <div id="modal-sobre nosotros" class="modal oculto">
+    <div class="modal-contenido">
+      <p> En Micasita te damos la bienvenida con el corazón. Somos un emprendimiento multirubro que nació con mucho amor, con la idea de ofrecer un poquito de todo... y mucho de nosotros.
+    </p>
+    <p>
+      Sabemos que hoy en día el tiempo vale oro, por eso agradecemos de corazón que te hayas tomado un momento para conocernos. Cada visita, cada mensaje, cada compra y cada palabra de aliento nos impulsa a seguir creciendo.
+    </p>
+    <p>
+      Detrás de este espacio hay sueños, esfuerzo y muchas ganas de brindar lo mejor. Gracias por ser parte de esta aventura. ¡Micasita también es tu casita!
+    </p></p>
+      <button onclick="cerrarVentana('sobre nosotros')">Cerrar</button>
+    </div>
+  </div>
+
+  <div id="modal-redes sociales" class="modal oculto">
+    <div class="modal-contenido">
+      <p>Instagram: mi.casita01</p>
+      <p>WhatsApp: 3533439355 </p>
+      <button onclick="cerrarVentana('redes sociales')">Cerrar</button>
+    </div>
+  </div>
+
+  <script>
+    function irInicio() {
+      window.location.href = 'index.html';
+    }
+
+    function mostrarVentana(tipo) {
+      document.getElementById('modal-' + tipo).classList.remove('oculto');
+    }
+
+    function cerrarVentana(tipo) {
+      document.getElementById('modal-' + tipo).classList.add('oculto');
+    }
+  </script>
+
+  <footer class="footer">
+    <a href="https://wa.me/543533518390?text=Hola%20como%20estas%3F%20tengo%20una%20consulta" target="_blank" class="whatsapp">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" />
+  <div class="footer-content">
+</footer>
+
+</body>
+</html>
