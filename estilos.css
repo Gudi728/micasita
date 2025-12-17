@@ -35,6 +35,35 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 16px 0;
+  gap: 12px;
+}
+
+.main-nav {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  background-color: var(--color-secundario);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.nav-btn:hover {
+  background-color: var(--color-hover);
+  transform: translateY(-2px);
+}
+
+.nav-btn:active {
+  transform: translateY(0);
 }
 
 .logo-btn { background: none; border: 0; padding:0; }
@@ -254,10 +283,56 @@ input[type="tel"] {
 
 /* 🎯 RESPONSIVE: diseño adaptado a celulares */
 @media (max-width: 768px) {
-  .header-inner { flex-direction: column; gap: 10px; }
-  .logo { width: 72px; height: 72px; }
-  .card { height: 120px; padding: 18px; font-size: 0.98rem; }
-  .encabezado { padding: 18px 12px; }
+  .wrap {
+    width: 98%;
+  }
+
+  .header-inner {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+  }
+
+  .main-nav {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .nav-btn {
+    flex: 1 1 auto;
+    min-width: 120px;
+    font-size: 0.9rem;
+    padding: 10px 12px;
+  }
+
+  .logo {
+    width: 72px;
+    height: 72px;
+  }
+
+  .card {
+    height: 120px;
+    padding: 18px;
+    font-size: 0.98rem;
+  }
+
+  .encabezado {
+    padding: 18px 12px;
+  }
+
+  .script {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+
+  .intro .lead {
+    font-size: 0.95rem;
+    margin: 0 auto 20px auto;
+  }
 }
 
 
@@ -270,13 +345,107 @@ input[type="tel"] {
 .footer-content p { margin:0; color:#444; }
 
 /* Modal styles */
-.modal { position: fixed; inset: 0; display: grid; place-items: center; visibility: hidden; opacity: 0; transition: opacity 0.22s ease, visibility 0.22s ease; z-index: 1200; }
-.modal::before { content: ''; position: absolute; inset:0; background: rgba(0,0,0,0.48); }
-.modal .modal-content { position: relative; z-index: 2; max-width: 720px; width: min(92%, 560px); background: var(--color-secundario); color: var(--color-primario); padding: 22px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-.modal .modal-content h2 { margin-top:0; color: #fff; }
-.modal .btn-close { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.18); padding: 8px 12px; border-radius: 8px; cursor: pointer; }
-.modal .btn-close:hover { background: rgba(0,0,0,0.08); }
-.modal.modal-open { visibility: visible; opacity: 1; }
+.modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.22s ease, visibility 0.22s ease;
+  z-index: 1200;
+  padding: 16px;
+}
+
+.modal::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.48);
+  z-index: 1;
+}
+
+.modal .modal-content {
+  position: relative;
+  z-index: 2;
+  max-width: 560px;
+  width: 100%;
+  background: var(--color-secundario);
+  color: var(--color-primario);
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal .modal-content h2 {
+  margin: 0 0 16px 0;
+  color: #fff;
+  font-size: 1.8rem;
+}
+
+.modal .modal-content p {
+  line-height: 1.6;
+  margin: 10px 0;
+}
+
+.modal .btn-close {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease;
+  margin-top: 16px;
+  width: 100%;
+}
+
+.modal .btn-close:hover {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.modal.modal-open {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Mobile responsive modales */
+@media (max-width: 768px) {
+  .modal {
+    padding: 12px;
+  }
+
+  .modal .modal-content {
+    padding: 20px;
+    border-radius: 10px;
+    max-height: 85vh;
+  }
+
+  .modal .modal-content h2 {
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+  }
+
+  .modal .modal-content p {
+    font-size: 0.95rem;
+  }
+
+  .modal .btn-close {
+    padding: 12px 14px;
+    font-size: 0.95rem;
+  }
+}
 
 /* Accessibility focus states */
-:focus { outline: 3px solid rgba(243,88,186,0.3); outline-offset: 2px; }
+:focus {
+  outline: 3px solid rgba(243, 88, 186, 0.3);
+  outline-offset: 2px;
+}
+
+button:focus,
+.nav-btn:focus {
+  outline: 3px solid rgba(243, 88, 186, 0.5);
+}
