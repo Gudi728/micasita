@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Administración Micasita</title>
+  <link rel="stylesheet" href="estilos.css">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #fdd5eb 0%, #f89cd7 100%);
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .login-container {
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 400px;
+      margin: 20px;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .login-header h1 {
+      color: var(--color-text);
+      font-size: 1.8rem;
+      margin: 0 0 8px 0;
+    }
+
+    .login-header p {
+      color: #999;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      color: var(--color-text);
+      font-size: 0.95rem;
+    }
+
+    .form-group input {
+      padding: 12px 16px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Montserrat', sans-serif;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--color-secundario);
+      box-shadow: 0 0 0 3px rgba(243, 88, 186, 0.1);
+    }
+
+    .login-btn {
+      padding: 12px 20px;
+      background: var(--color-secundario);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .login-btn:hover {
+      background: var(--color-hover);
+      transform: translateY(-2px);
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+    }
+
+    .error-message {
+      padding: 12px;
+      background: #ff6b6b;
+      color: white;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 600;
+      display: none;
+      animation: shake 0.3s ease;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: #999;
+    }
+
+    @media (max-width: 768px) {
+      .login-container {
+        padding: 30px 20px;
+        max-width: 90%;
+      }
+
+      .login-header h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <h1>Micasita Admin</h1>
+      <p>Panel de administración</p>
+    </div>
+
+    <div class="error-message" id="errorMsg"></div>
+
+    <form class="login-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="usuario">Usuario</label>
+        <input type="text" id="usuario" placeholder="Ingresa tu usuario" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
+      </div>
+
+      <button type="submit" class="login-btn">Acceder</button>
+    </form>
+
+    <div class="login-footer">
+      <p>Panel protegido para administradores únicamente</p>
+    </div>
+  </div>
+
+  <script>
+    // Credenciales correctas
+    const USUARIO_CORRECTO = 'micaela';
+    const PASSWORD_CORRECTO = 'MyM728';
+
+    // Si ya está autenticado, redirigir a admin
+    function verificarSesion() {
+      const sesion = sessionStorage.getItem('micasita_admin_auth');
+      if (sesion === 'true') {
+        window.location.href = 'admin.html';
+      }
+    }
+
+    // Manejar el login
+    function handleLogin(event) {
+      event.preventDefault();
+
+      const usuario = document.getElementById('usuario').value;
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+
+      if (usuario === USUARIO_CORRECTO && password === PASSWORD_CORRECTO) {
+        // Autenticación exitosa
+        sessionStorage.setItem('micasita_admin_auth', 'true');
+        window.location.href = 'admin.html';
+      } else {
+        // Mostrar error
+        errorMsg.textContent = 'Usuario o contraseña incorrectos';
+        errorMsg.classList.add('show');
+        document.getElementById('password').value = '';
+        
+        setTimeout(() => {
+          errorMsg.classList.remove('show');
+        }, 3000);
+      }
+    }
+
+    // Verificar sesión al cargar
+    document.addEventListener('DOMContentLoaded', verificarSesion);
+
+    // Permitir Enter para enviar
+    document.getElementById('password').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.querySelector('.login-form').dispatchEvent(new Event('submit'));
+      }
+    });
+  </script>
+</body>
+</html>
