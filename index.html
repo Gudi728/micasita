@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Micasita Multirubro</title>
+  <link rel="stylesheet" href="estilos.css">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <button class="logo-btn" aria-label="Ir al inicio" onclick="irInicio()">
+          <img src="imagenes/logo.jpg" alt="Logo Micasita" class="logo">
+        </button>
+        <nav class="main-nav" aria-label="Navegación principal">
+          <button class="nav-btn" onclick="mostrarVentana('sobre nosotros')">Sobre nosotros</button>
+          <button class="nav-btn" onclick="mostrarVentana('redes sociales')">Redes sociales</button>
+          <a href="admin.html" class="nav-btn" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">⚙️ Admin</a>
+        </nav>
+      </div>
+      <div class="encabezado">
+        <h1><span class="script">Micasita</span> <span class="negrita">MULTIRUBRO</span></h1>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="intro">
+        <p class="lead">Encuentra todo lo que necesitas en un mismo lugar — calidad y cariño en cada producto.</p>
+      </section>
+
+      <section class="categorias" id="seccion-categorias" aria-label="Categorías">
+        <!-- Se cargará dinámicamente -->
+      </section>
+    </main>
+
+    <!-- Modales accesibles -->
+    <div id="modal-sobre nosotros" class="modal" role="dialog" aria-hidden="true" aria-labelledby="titulo-sobre">
+      <div class="modal-content">
+        <h2 id="titulo-sobre">Sobre nosotros</h2>
+        <p>"Micasita es un emprendimiento multirubro creado con amor y dedicación. Valoramos cada visita, mensaje y compra porque nos motivan a crecer. Detrás de este proyecto hay sueños y esfuerzo, y queremos que sientas que Micasita también es tu casita."</p>
+        <button class="btn-close" onclick="cerrarVentana('sobre nosotros')">Cerrar</button>
+      </div>
+    </div>
+
+    <div id="modal-redes sociales" class="modal" role="dialog" aria-hidden="true" aria-labelledby="titulo-redes">
+      <div class="modal-content">
+        <h2 id="titulo-redes">Redes sociales</h2>
+        <p>Instagram: mi.casita01</p>
+        <p>WhatsApp: 3533439355</p>
+        <button class="btn-close" onclick="cerrarVentana('redes sociales')">Cerrar</button>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="wrap footer-inner">
+        <div class="footer-content">
+          <p>Contacto rápido:</p>
+          <a href="https://wa.me/543533518390?text=Hola%20como%20estas%3F%20tengo%20una%20consulta" target="_blank" class="whatsapp" rel="noopener noreferrer">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" />
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="admin.js"></script>
+    <script>
+      // Cargar categorías dinámicamente
+      function cargarCategorias() {
+        const categorias = DataManager.cargarCategorias();
+        const contenedor = document.getElementById('seccion-categorias');
+        
+        if (categorias.length === 0) {
+          // Mostrar categorías por defecto si no hay datos
+          const categoriasDefault = [
+            { nombre: 'Electrónica' },
+            { nombre: 'Juguetes' },
+            { nombre: 'Útiles' },
+            { nombre: 'Hogar' },
+            { nombre: 'Bazar' },
+            { nombre: 'Blanquería' },
+            { nombre: 'Freidoras de aire' },
+            { nombre: 'Droguería' }
+          ];
+          contenedor.innerHTML = categoriasDefault.map(cat => `
+            <a class="card" href="productos.html?categoria=${encodeURIComponent(cat.nombre)}">${cat.nombre}</a>
+          `).join('');
+        } else {
+          contenedor.innerHTML = categorias.map(cat => `
+            <a class="card" href="productos.html?categoria=${encodeURIComponent(cat.nombre)}" style="background-image: url('${cat.imagen}'); background-size: cover; background-position: center; color: #fff;">${cat.nombre}</a>
+          `).join('');
+        }
+      }
+
+      function irInicio() { window.location.href = 'index.html'; }
+
+      function mostrarVentana(tipo) {
+        const id = 'modal-' + tipo;
+        const modal = document.getElementById(id);
+        if (!modal) return;
+        modal.setAttribute('aria-hidden', 'false');
+        modal.classList.add('modal-open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function cerrarVentana(tipo) {
+        const id = 'modal-' + tipo;
+        const modal = document.getElementById(id);
+        if (!modal) return;
+        modal.setAttribute('aria-hidden', 'true');
+        modal.classList.remove('modal-open');
+        document.body.style.overflow = '';
+      }
+
+      // Cargar categorías al iniciar página
+      document.addEventListener('DOMContentLoaded', cargarCategorias);
+    </script>
+  </body>
+</html>
+
+
+
