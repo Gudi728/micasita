@@ -18,6 +18,7 @@
         <nav class="main-nav" aria-label="Navegación principal">
           <button class="nav-btn" onclick="mostrarVentana('sobre nosotros')">Sobre nosotros</button>
           <button class="nav-btn" onclick="mostrarVentana('redes sociales')">Redes sociales</button>
+          <button class="nav-btn" onclick="abrirUbicacion()">📍 Ubicación</button>
           <a href="admin.html" class="nav-btn" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">⚙️ Admin</a>
         </nav>
       </div>
@@ -51,6 +52,16 @@
         <p>Instagram: mi.casita01</p>
         <p>WhatsApp: 3533439355</p>
         <button class="btn-close" onclick="cerrarVentana('redes sociales')">Cerrar</button>
+      </div>
+    </div>
+
+    <div id="modal-ubicacion" class="modal" role="dialog" aria-hidden="true" aria-labelledby="titulo-ubicacion">
+      <div class="modal-content">
+        <h2 id="titulo-ubicacion">📍 Ubicación</h2>
+        <p><strong>Roque Sáenz Peña 144</strong></p>
+        <p style="color: #666; font-size: 0.95rem; margin: 15px 0;">Toca el botón abajo para abrir en Google Maps o tu GPS</p>
+        <button class="btn-ubicacion" onclick="irAUbicacion()">Abrir en Maps</button>
+        <button class="btn-close" onclick="cerrarVentana('ubicacion')">Cerrar</button>
       </div>
     </div>
 
@@ -95,6 +106,17 @@
       }
 
       function irInicio() { window.location.href = 'index.html'; }
+
+      function abrirUbicacion() {
+        mostrarVentana('ubicacion');
+      }
+
+      function irAUbicacion() {
+        // Abrir en Google Maps
+        const direccion = 'Roque Sáenz Peña 144';
+        const urlMaps = `https://www.google.com/maps/search/${encodeURIComponent(direccion)}`;
+        window.open(urlMaps, '_blank');
+      }
 
       function mostrarVentana(tipo) {
         const id = 'modal-' + tipo;
