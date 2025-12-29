@@ -20,6 +20,23 @@
       margin-bottom: 30px;
       border-bottom: 2px solid var(--color-secundario);
       padding-bottom: 20px;
+      gap: 20px;
+    }
+
+    .btn-logout {
+      padding: 10px 16px;
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .btn-logout:hover {
+      background: #ff5252;
     }
 
     .admin-tabs {
@@ -310,8 +327,11 @@
     <a href="index.html" class="btn-volver">← Volver a inicio</a>
 
     <div class="admin-header">
-      <h1>Panel de Administración</h1>
-      <p>Gestiona categorías y productos</p>
+      <div>
+        <h1>Panel de Administración</h1>
+        <p>Gestiona categorías y productos</p>
+      </div>
+      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
     </div>
 
     <div class="admin-tabs">
@@ -648,9 +668,29 @@
       }
     }
 
+    // Verificar autenticación
+    function verificarAutenticacion() {
+      const sesion = sessionStorage.getItem('micasita_admin_auth');
+      if (sesion !== 'true') {
+        window.location.href = 'login.html';
+        return false;
+      }
+      return true;
+    }
+
+    // Cerrar sesión
+    function logout() {
+      if (confirm('¿Deseas cerrar sesión?')) {
+        sessionStorage.removeItem('micasita_admin_auth');
+        window.location.href = 'login.html';
+      }
+    }
+
     // Cargar datos al iniciar
-    inicializarCategoriasDefault();
-    mostrarCategorias();
+    if (verificarAutenticacion()) {
+      inicializarCategoriasDefault();
+      mostrarCategorias();
+    }
   </script>
 </body>
 </html>
