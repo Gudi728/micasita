@@ -7,6 +7,8 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // DataManager actualizado para usar Supabase
 const DataManager = {
+  // ========== CATEGORÍAS ==========
+  
   // Cargar todas las categorías desde Supabase
   async cargarCategorias() {
     try {
@@ -18,38 +20,6 @@ const DataManager = {
       return data || [];
     } catch (error) {
       console.error('Error al cargar categorías:', error);
-      return [];
-    }
-  },
-
-  // Cargar todos los productos desde Supabase
-  async cargarProductos() {
-    try {
-      const { data, error } = await supabaseClient
-        .from('productos')
-        .select('*');
-      
-      if (error) throw error;
-      return data || [];
-    } catch (error) {
-      console.error('Error al cargar productos:', error);
-      return [];
-    }
-  },
-
-  // Obtener productos por categoría
-  async obtenerProductosPorCategoria(categoria) {
-    try {
-      const { data, error } = await supabaseClient
-        .from('productos')
-        .select('*')
-        .eq('categoria', categoria)
-        .gt('stock', 0);
-      
-      if (error) throw error;
-      return data || [];
-    } catch (error) {
-      console.error('Error al obtener productos por categoría:', error);
       return [];
     }
   },
@@ -113,12 +83,70 @@ const DataManager = {
     }
   },
 
-  // Agregar nuevo producto
-  async agregarProducto(nombre, precio, categoria, imagen, descripcion) {
+  // ========== PRODUCTOS ==========
+  
+  // Cargar todos los productos desde Supabase
+  async cargarProductos() {
     try {
       const { data, error } = await supabaseClient
         .from('productos')
-        .insert([{ nombre, precio, categoria, imagen, descripcion }])
+        .select('*');
+      
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error al cargar productos:', error);
+      return [];
+    }
+  },
+
+  // Cargar productos con stock (para control de inventario)
+  async cargarProductosConStock() {
+    try {
+      const { data, error } = await supabaseClient
+        .from('productos')
+        .select('*')
+        .order('nombre');
+      
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error al cargar productos con stock:', error);
+      return [];
+    }
+  },
+
+  // Obtener productos por categoría (para vista pública)
+  async obtenerProductosPorCategoria(categoriaNombre) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('productos')
+        .select('*')
+        .eq('categoria', categoriaNombre)
+        .gt('stock', 0);
+      
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error al obtener productos por categoría:', error);
+      return [];
+    }
+  },
+
+  // Agregar nuevo producto
+  async agregarProducto(nombre, precio, categoria, imagen, descripcion, stock = 0, precioCosto = 0) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('productos')
+        .insert([{ 
+          nombre, 
+          precio, 
+          categoria, 
+          imagen, 
+          descripcion,
+          stock,
+          precio_costo: precioCosto
+        }])
         .select();
       
       if (error) throw error;
@@ -162,70 +190,8 @@ const DataManager = {
     }
   },
 
-  // Obtener productos por categoría
-  async obtenerProductosPorCategoria(categoriaNombre) {
-    try {
-      const { data, error } = await supabaseClient
-        .from('productos')
-        .select('*')
-        .eq('categoria', categoriaNombre);
-      
-      if (error) throw error;
-      return data || [];
-    } catch (error) {
-      console.error('Error al obtener productos por categoría:', error);
-      return [];
-    }
-  },
-
-  // Escuchar cambios en tiempo real (categorías)
-  onCategoriasChange(callback) {
-    return supabaseClient
-      .channel('categorias')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'categorias' }, (payload) => {
-        callback(payload);
-      })
-      .subscribe();
-  },
-
-  // Escuchar cambios en tiempo real (productos)
-  onProductosChange(callback) {
-    return supabaseClient
-      .channel('productos')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'productos' }, (payload) => {
-        callback(payload);
-      })
-      .subscribe();
-  }
-};
-
-// Funciones auxiliares
-function convertirImagenABase64(archivo, callback) {
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    callback(e.target.result);
-  };
-  reader.readAsDataURL(archivo);
-}
-
-// === FUNCIONES DE STOCK Y VENTAS ===
+  // ========== STOCK ==========
   
-// Obtener productos con stock
-async cargarProductosConStock() {
-    try {
-      const { data, error } = await supabaseClient
-        .from('productos')
-        .select('*')
-        .order('nombre');
-      
-      if (error) throw error;
-      return data || [];
-    } catch (error) {
-      console.error('Error al cargar productos con stock:', error);
-      return [];
-    }
-  },
-
   // Actualizar stock de un producto
   async actualizarStock(productoId, nuevoStock) {
     try {
@@ -263,11 +229,13 @@ async cargarProductosConStock() {
     }
   },
 
+  // ========== VENTAS ==========
+  
   // Registrar una venta
   async registrarVenta(productoId, cantidadVendida, precioUnitario) {
     try {
       // Obtener producto actual
-      const { data: productos, error: errorProducto } = await supabaseClient
+      const { data: producto, error: errorProducto } = await supabaseClient
         .from('productos')
         .select('*')
         .eq('id', productoId)
@@ -275,7 +243,6 @@ async cargarProductosConStock() {
       
       if (errorProducto) throw errorProducto;
 
-      const producto = productos;
       const nuevoStock = Math.max(0, producto.stock - cantidadVendida);
       const gananciaPorUnidad = precioUnitario - (producto.precio_costo || 0);
       const gananciaTotalVenta = gananciaPorUnidad * cantidadVendida;
@@ -304,6 +271,9 @@ async cargarProductosConStock() {
         .eq('id', productoId);
 
       if (errorStock) throw errorStock;
+
+      // Registrar automáticamente en movimientos de caja como "venta"
+      await this.registrarMovimientoCaja('venta', precioUnitario * cantidadVendida, `Venta de ${producto.nombre} x${cantidadVendida}`, `venta_${venta[0].id}`);
 
       return {
         venta: venta[0],
@@ -352,8 +322,8 @@ async cargarProductosConStock() {
     }
   },
 
-  // === FUNCIONES DE CAJA ===
-
+  // ========== CAJA / MOVIMIENTOS ==========
+  
   // Registrar movimiento de caja
   async registrarMovimientoCaja(tipo, monto, descripcion, relacionadoA = null) {
     try {
@@ -414,9 +384,43 @@ async cargarProductosConStock() {
       console.error('Error al obtener saldo de caja:', error);
       return 0;
     }
+  },
+
+  // ========== ESCUCHAS EN TIEMPO REAL ==========
+  
+  // Escuchar cambios en categorías
+  onCategoriasChange(callback) {
+    return supabaseClient
+      .channel('categorias')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'categorias' }, (payload) => {
+        callback(payload);
+      })
+      .subscribe();
+  },
+
+  // Escuchar cambios en productos
+  onProductosChange(callback) {
+    return supabaseClient
+      .channel('productos')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'productos' }, (payload) => {
+        callback(payload);
+      })
+      .subscribe();
   }
 };
 
+// ========== FUNCIONES AUXILIARES ==========
+
+// Convertir imagen a Base64
+function convertirImagenABase64(archivo, callback) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    callback(e.target.result);
+  };
+  reader.readAsDataURL(archivo);
+}
+
+// Mostrar mensajes en la UI
 function mostrarMensaje(texto, tipo = 'exito') {
   const mensaje = document.createElement('div');
   mensaje.className = `mensaje-${tipo}`;
