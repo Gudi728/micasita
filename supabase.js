@@ -106,9 +106,14 @@ const DataManager = {
       const { data, error } = await supabaseClient
         .from('productos')
         .select('*')
-        .order('nombre');
+        .order('nombre', { ascending: true });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error Supabase al cargar productos:', error.message);
+        throw error;
+      }
+      
+      console.log('Productos cargados:', data?.length || 0);
       return data || [];
     } catch (error) {
       console.error('Error al cargar productos con stock:', error);

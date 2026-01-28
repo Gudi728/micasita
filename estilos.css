@@ -921,3 +921,27 @@ button:focus,
   color: #e74c3c;
   font-weight: 600;
 }
+
+/* Estilos para productos en stock */
+.producto-categoria {
+  color: #888;
+  font-size: 0.9rem;
+  margin: 5px 0 10px 0;
+  font-style: italic;
+}
+
+.btn-refrescar {
+  background-color: var(--color-secundario);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-refrescar:hover {
+  background-color: var(--color-hover);
+}

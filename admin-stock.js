@@ -2,11 +2,19 @@
 
 // Mostrar control de stock
 async function mostrarControlStock() {
+  console.log('Cargando productos para control de stock...');
   const productos = await DataManager.cargarProductosConStock();
   const contenedor = document.getElementById('lista-stock');
 
+  console.log('Productos encontrados:', productos.length);
+
   if (productos.length === 0) {
-    contenedor.innerHTML = '<div class="sin-contenido">No hay productos. Agrega algunos primero.</div>';
+    contenedor.innerHTML = `
+      <div class="sin-contenido">
+        <p>No hay productos. Agrega algunos primero.</p>
+        <button onclick="mostrarControlStock()" class="btn-refrescar">🔄 Refrescar</button>
+      </div>
+    `;
     return;
   }
 
@@ -14,6 +22,7 @@ async function mostrarControlStock() {
     <div class="item-stock">
       <div class="stock-info">
         <h3>${prod.nombre}</h3>
+        <p class="producto-categoria">Categoría: ${prod.categoria}</p>
         <div class="stock-datos">
           <div class="dato">
             <label>Stock:</label>
