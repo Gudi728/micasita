@@ -79,6 +79,18 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
     <script>
+      // Mapeo de emojis por categoría
+      const emojiPorCategoria = {
+        'Electrónica': '🔌',
+        'Juguetes': '🎮',
+        'Útiles': '✏️',
+        'Hogar': '🏠',
+        'Bazar': '🛒',
+        'Blanquería': '🛏️',
+        'Freidoras de aire': '🍟',
+        'Droguería': '💊'
+      };
+
       // Cargar categorías dinámicamente desde Supabase
       async function cargarCategorias() {
         const categorias = await DataManager.cargarCategorias();
@@ -97,11 +109,17 @@
             { nombre: 'Droguería' }
           ];
           contenedor.innerHTML = categoriasDefault.map(cat => `
-            <a class="card" href="electronica.html?categoria=${encodeURIComponent(cat.nombre)}">${cat.nombre}</a>
+            <a class="card card-default" href="electronica.html?categoria=${encodeURIComponent(cat.nombre)}">
+              <span class="card-emoji">${emojiPorCategoria[cat.nombre] || '📦'}</span>
+              <span class="card-nombre">${cat.nombre}</span>
+            </a>
           `).join('');
         } else {
           contenedor.innerHTML = categorias.map(cat => `
-            <a class="card" href="electronica.html?categoria=${encodeURIComponent(cat.nombre)}" style="background-image: url('${cat.imagen}'); background-size: cover; background-position: center; color: #fff;">${cat.nombre}</a>
+            <a class="card" href="electronica.html?categoria=${encodeURIComponent(cat.nombre)}" style="background-image: url('${cat.imagen}'); background-size: cover; background-position: center;">
+              <span class="card-emoji">${emojiPorCategoria[cat.nombre] || '📦'}</span>
+              <span class="card-nombre">${cat.nombre}</span>
+            </a>
           `).join('');
         }
       }
