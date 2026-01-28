@@ -72,8 +72,8 @@ async function mostrarCategorias() {
       <img src="${cat.imagen}" alt="${cat.nombre}" class="item-imagen">
       <div class="item-titulo">${cat.nombre}</div>
       <div class="btn-acciones">
-        <button class="btn-editar" onclick="editarCategoria('${cat.id}')">Editar</button>
-        <button class="btn-eliminar" onclick="eliminarCategoria('${cat.id}')">Eliminar</button>
+        <button class="btn-editar" onclick="editarCategoria(${cat.id})">Editar</button>
+        <button class="btn-eliminar" onclick="eliminarCategoria(${cat.id})">Eliminar</button>
       </div>
     </div>
   `).join('');
@@ -182,8 +182,8 @@ async function mostrarProductos() {
         ${prod.categoria}
       </div>
       <div class="btn-acciones">
-        <button class="btn-editar" onclick="editarProducto('${prod.id}')">Editar</button>
-        <button class="btn-eliminar" onclick="eliminarProducto('${prod.id}')">Eliminar</button>
+        <button class="btn-editar" onclick="editarProducto(${prod.id})">Editar</button>
+        <button class="btn-eliminar" onclick="eliminarProducto(${prod.id})">Eliminar</button>
       </div>
     </div>
   `).join('');
