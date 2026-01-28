@@ -2,13 +2,17 @@
 
 // Mostrar control de stock
 async function mostrarControlStock() {
-  console.log('Cargando productos para control de stock...');
+  console.log('🔄 Cargando productos para control de stock...');
   const productos = await DataManager.cargarProductosConStock();
   const contenedor = document.getElementById('lista-stock');
 
-  console.log('Productos encontrados:', productos.length);
+  console.log('✅ Productos encontrados:', productos.length);
+  if (productos.length > 0) {
+    console.log('📦 Primer producto:', productos[0]);
+  }
 
   if (productos.length === 0) {
+    console.warn('⚠️ No hay productos en la base de datos');
     contenedor.innerHTML = `
       <div class="sin-contenido">
         <p>No hay productos. Agrega algunos primero.</p>
