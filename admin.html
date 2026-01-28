@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de AdministraciÃ³n - Micasita</title>
+  <title>Panel de Administración - Micasita</title>
   <link rel="stylesheet" href="estilos.css">
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -338,29 +338,29 @@
     </div>
 
     <div class="admin-tabs">
-      <button class="tab-btn activo" onclick="cambiarTab('categorias')">CategorÃ­as</button>
+      <button class="tab-btn activo" onclick="cambiarTab('categorias')">Categorías</button>
       <button class="tab-btn" onclick="cambiarTab('productos')">Productos</button>
-      <button class="tab-btn" onclick="exportarDatos()" title="Descargar datos para compartir">ðŸ“¥ Exportar datos</button>
-      <button class="tab-btn" onclick="importarDatos()" title="Cargar datos desde otro dispositivo">ðŸ“¤ Importar datos</button>
+      <button class="tab-btn" onclick="exportarDatos()" title="Descargar datos para compartir">📥 Exportar datos</button>
+      <button class="tab-btn" onclick="importarDatos()" title="Cargar datos desde otro dispositivo">📤 Importar datos</button>
     </div>
 
-    <!-- TAB CATEGORÃAS -->
+    <!-- TAB CATEGORÍAS -->
     <div id="tab-categorias" class="tab-content activo">
-      <h2>Gestionar CategorÃ­as</h2>
+      <h2>Gestionar Categorías</h2>
 
       <form id="form-categoria">
         <input type="hidden" id="cat-id">
         <div class="form-group">
-          <label>Nombre de categorÃ­a</label>
+          <label>Nombre de categoría</label>
           <input type="text" id="cat-nombre" required>
         </div>
         <div class="form-group">
-          <label>Imagen de categorÃ­a</label>
+          <label>Imagen de categoría</label>
           <input type="file" id="cat-imagen" accept="image/*">
           <img id="cat-preview" class="preview-imagen" style="display:none;">
         </div>
         <div class="btn-grupo">
-          <button type="submit" class="btn-guardar" id="btn-guardar-cat">Agregar categorÃ­a</button>
+          <button type="submit" class="btn-guardar" id="btn-guardar-cat">Agregar categoría</button>
           <button type="button" class="btn-cancelar" onclick="limpiarFormCategoria()" style="display:none;" id="btn-cancelar-cat">Cancelar</button>
         </div>
       </form>
@@ -383,13 +383,13 @@
           <input type="number" id="prod-precio" step="0.01" required>
         </div>
         <div class="form-group">
-          <label>CategorÃ­a</label>
+          <label>Categoría</label>
           <select id="prod-categoria" required>
-            <option value="">Selecciona una categorÃ­a</option>
+            <option value="">Selecciona una categoría</option>
           </select>
         </div>
         <div class="form-group">
-          <label>DescripciÃ³n</label>
+          <label>Descripción</label>
           <textarea id="prod-descripcion"></textarea>
         </div>
         <div class="form-group">
