@@ -1,0 +1,20 @@
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Node modules (si usas npm)
+node_modules/
+package-lock.json
+
+# Archivos temporales
+*.tmp
+*.log
+.vscode/settings.json
+
+# Archivos de base de datos local
+*.db
+*.sqlite
+
+# Archivos de configuración privada (si los tienes)
+.env.local
+.env.*.local
