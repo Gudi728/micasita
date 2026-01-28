@@ -164,14 +164,15 @@ async function confirmarVenta(productoId) {
   const resultado = await DataManager.registrarVenta(productoId, cantidad, precio);
 
   if (resultado) {
-        // Registrar en caja automáticamente
-        await DataManager.registrarMovimientoCaja('venta', resultado.ganancia * cantidad, `Venta de producto`, 'venta');
-        
-        mostrarMensaje(`Venta registrada. Ganancia: $${resultado.ganancia.toFixed(2)}`, 'exito');
-        cerrarModalVenta();
-        mostrarControlStock();
-        mostrarHistorialVentas();
-        mostrarControlCaja();
+    // Registrar en caja automáticamente
+    await DataManager.registrarMovimientoCaja('venta', resultado.ganancia * cantidad, `Venta de producto`, 'venta');
+    
+    mostrarMensaje(`Venta registrada. Ganancia: $${resultado.ganancia.toFixed(2)}`, 'exito');
+    cerrarModalVenta();
+    mostrarControlStock();
+    mostrarHistorialVentas();
+    mostrarControlCaja();
+  }
 }
 
 // Cerrar modal de venta
