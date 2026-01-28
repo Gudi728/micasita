@@ -25,7 +25,7 @@ function cambiarTab(tab) {
 document.getElementById('form-categoria').addEventListener('submit', async function(e) {
   e.preventDefault();
   const id = document.getElementById('cat-id').value;
-  const nombre = document.getElementById('cat-nombre').value;
+  const nombre = document.getElementById('cat-nombre').value.trim();
   const inputImagen = document.getElementById('cat-imagen');
 
   if (!nombre) {
@@ -41,11 +41,19 @@ document.getElementById('form-categoria').addEventListener('submit', async funct
   if (inputImagen.files.length > 0) {
     convertirImagenABase64(inputImagen.files[0], async function(base64) {
       if (id) {
-        await DataManager.editarCategoria(id, nombre, base64);
-        mostrarMensaje('Categoría actualizada', 'exito');
+        const resultado = await DataManager.editarCategoria(id, nombre, base64);
+        if (resultado) {
+          mostrarMensaje('Categoría actualizada', 'exito');
+        } else {
+          mostrarMensaje('Error al actualizar categoría', 'error');
+        }
       } else {
-        await DataManager.agregarCategoria(nombre, base64);
-        mostrarMensaje('Categoría agregada', 'exito');
+        const resultado = await DataManager.agregarCategoria(nombre, base64);
+        if (resultado) {
+          mostrarMensaje('Categoría agregada', 'exito');
+        } else {
+          mostrarMensaje('Error al agregar categoría (puede que ya exista)', 'error');
+        }
       }
       limpiarFormCategoria();
       mostrarCategorias();
@@ -53,10 +61,16 @@ document.getElementById('form-categoria').addEventListener('submit', async funct
   } else if (id) {
     const categorias = await DataManager.cargarCategorias();
     const cat = categorias.find(c => c.id === id);
-    await DataManager.editarCategoria(id, nombre, cat.imagen);
-    mostrarMensaje('Categoría actualizada', 'exito');
+    const resultado = await DataManager.editarCategoria(id, nombre, cat.imagen);
+    if (resultado) {
+      mostrarMensaje('Categoría actualizada', 'exito');
+    } else {
+      mostrarMensaje('Error al actualizar categoría', 'error');
+    }
     limpiarFormCategoria();
     mostrarCategorias();
+  } else {
+    mostrarMensaje('Selecciona una imagen', 'error');
   }
 });
 

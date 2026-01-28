@@ -40,15 +40,25 @@ const DataManager = {
   // Agregar nueva categoría
   async agregarCategoria(nombre, imagen) {
     try {
+      if (!nombre || !imagen) {
+        console.error('Nombre o imagen vacíos');
+        return null;
+      }
+
       const { data, error } = await supabaseClient
         .from('categorias')
-        .insert([{ nombre, imagen }])
+        .insert([{ nombre: nombre.trim(), imagen }])
         .select();
       
-      if (error) throw error;
-      return data[0];
+      if (error) {
+        console.error('Error Supabase:', error.message);
+        throw error;
+      }
+      
+      console.log('Categoría agregada exitosamente:', data);
+      return data && data.length > 0 ? data[0] : null;
     } catch (error) {
-      console.error('Error al agregar categoría:', error);
+      console.error('Error al agregar categoría:', error.message);
       return null;
     }
   },
