@@ -37,6 +37,23 @@ const DataManager = {
     }
   },
 
+  // Obtener productos por categoría
+  async obtenerProductosPorCategoria(categoria) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('productos')
+        .select('*')
+        .eq('categoria', categoria)
+        .gt('stock', 0);
+      
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error al obtener productos por categoría:', error);
+      return [];
+    }
+  },
+
   // Agregar nueva categoría
   async agregarCategoria(nombre, imagen) {
     try {
