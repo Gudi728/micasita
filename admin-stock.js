@@ -365,5 +365,4 @@ function cerrarModalCaja() {
     modal.remove();
   }
 }
-  }
 }
