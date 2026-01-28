@@ -177,12 +177,14 @@ function convertirImagenABase64(archivo, callback) {
   const reader = new FileReader();
   reader.onload = function(e) {
     callback(e.target.result);
-  },
+  };
+  reader.readAsDataURL(archivo);
+}
 
-  // === FUNCIONES DE STOCK Y VENTAS ===
+// === FUNCIONES DE STOCK Y VENTAS ===
   
-  // Obtener productos con stock
-  async cargarProductosConStock() {
+// Obtener productos con stock
+async cargarProductosConStock() {
     try {
       const { data, error } = await supabaseClient
         .from('productos')
