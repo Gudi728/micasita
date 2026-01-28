@@ -15,7 +15,12 @@ function cambiarTab(tab) {
     cargarSelectCategorias();
     mostrarProductos();
   } else if (tab === 'stock') {
-    inicializarControlStock();
+    if (typeof inicializarControlStock === 'function') {
+      inicializarControlStock();
+    } else {
+      console.error('inicializarControlStock no está disponible');
+      document.getElementById('tab-stock').innerHTML = '<div class="sin-contenido">Error al cargar control de stock. Recarga la página.</div>';
+    }
   } else {
     mostrarCategorias();
   }
