@@ -340,6 +340,7 @@
     <div class="admin-tabs">
       <button class="tab-btn activo" onclick="cambiarTab('categorias')">Categorías</button>
       <button class="tab-btn" onclick="cambiarTab('productos')">Productos</button>
+      <button class="tab-btn" onclick="cambiarTab('stock')">📊 Control de Stock</button>
       <button class="tab-btn" onclick="exportarDatos()" title="Descargar datos para compartir">📥 Exportar datos</button>
       <button class="tab-btn" onclick="importarDatos()" title="Cargar datos desde otro dispositivo">📤 Importar datos</button>
     </div>
@@ -405,7 +406,18 @@
 
       <div id="lista-productos" class="lista-items"></div>
     </div>
+
+    <!-- TAB CONTROL DE STOCK -->
+    <div id="tab-stock" class="tab-content">
+      <h2>Control de Stock y Ventas</h2>
+      <div id="lista-stock" class="lista-stock"></div>
+      
+      <h3 style="margin-top: 40px;">Historial de Ventas</h3>
+      <div id="historial-ventas" class="historial-ventas"></div>
+    </div>
+
   <script src="supabase.js"></script>
+  <script src="admin-stock.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>

@@ -177,6 +177,151 @@ function convertirImagenABase64(archivo, callback) {
   const reader = new FileReader();
   reader.onload = function(e) {
     callback(e.target.result);
+  },
+
+  // === FUNCIONES DE STOCK Y VENTAS ===
+  
+  // Obtener productos con stock
+  async cargarProductosConStock() {
+    try {
+      const { data, error } = await supabaseClient
+        .from('productos')
+        .select('*')
+        .order('nombre');
+      
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error al cargar productos con stock:', error);
+      return [];
+    }
+  },
+
+  // Actualizar stock de un producto
+  async actualizarStock(productoId, nuevoStock) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('productos')
+        .update({ stock: nuevoStock })
+        .eq('id', productoId)
+        .select();
+      
+      if (error) throw error;
+      return data[0];
+    } catch (error) {
+      console.error('Error al actualizar stock:', error);
+      return null;
+    }
+  },
+
+  // Actualizar precios de un producto
+  async actualizarPrecios(productoId, precioCosto, precioVentaAdmin) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('productos')
+        .update({ 
+          precio_costo: precioCosto,
+          precio_venta_admin: precioVentaAdmin
+        })
+        .eq('id', productoId)
+        .select();
+      
+      if (error) throw error;
+      return data[0];
+    } catch (error) {
+      console.error('Error al actualizar precios:', error);
+      return null;
+    }
+  },
+
+  // Registrar una venta
+  async registrarVenta(productoId, cantidadVendida, precioUnitario) {
+    try {
+      // Obtener producto actual
+      const { data: productos, error: errorProducto } = await supabaseClient
+        .from('productos')
+        .select('*')
+        .eq('id', productoId)
+        .single();
+      
+      if (errorProducto) throw errorProducto;
+
+      const producto = productos;
+      const nuevoStock = Math.max(0, producto.stock - cantidadVendida);
+      const gananciaPorUnidad = precioUnitario - (producto.precio_costo || 0);
+      const gananciaTotalVenta = gananciaPorUnidad * cantidadVendida;
+
+      // Registrar la venta
+      const { data: venta, error: errorVenta } = await supabaseClient
+        .from('ventas')
+        .insert([{
+          producto_id: productoId,
+          cantidad_vendida: cantidadVendida,
+          precio_unitario: precioUnitario,
+          ganancia_unitaria: gananciaPorUnidad,
+          ganancia_total: gananciaTotalVenta
+        }])
+        .select();
+
+      if (errorVenta) throw errorVenta;
+
+      // Actualizar stock del producto
+      const { error: errorStock } = await supabaseClient
+        .from('productos')
+        .update({ 
+          stock: nuevoStock,
+          fecha_ultima_venta: new Date().toISOString()
+        })
+        .eq('id', productoId);
+
+      if (errorStock) throw errorStock;
+
+      return {
+        venta: venta[0],
+        nuevoStock,
+        ganancia: gananciaTotalVenta
+      };
+    } catch (error) {
+      console.error('Error al registrar venta:', error);
+      return null;
+    }
+  },
+
+  // Obtener historial de ventas
+  async cargarVentas() {
+    try {
+      const { data, error } = await supabaseClient
+        .from('ventas')
+        .select(`
+          *,
+          productos:producto_id(nombre, precio)
+        `)
+        .order('fecha_venta', { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error al cargar ventas:', error);
+      return [];
+    }
+  },
+
+  // Obtener resumen de ganancias
+  async obtenerResumenGanancias() {
+    try {
+      const { data, error } = await supabaseClient
+        .from('ventas')
+        .select('ganancia_total');
+      
+      if (error) throw error;
+      
+      const totalGanancia = data.reduce((suma, venta) => suma + (venta.ganancia_total || 0), 0);
+      return totalGanancia;
+    } catch (error) {
+      console.error('Error al obtener ganancias:', error);
+      return 0;
+    }
+  }
   };
   reader.readAsDataURL(archivo);
 }

@@ -14,6 +14,8 @@ function cambiarTab(tab) {
   if (tab === 'productos') {
     cargarSelectCategorias();
     mostrarProductos();
+  } else if (tab === 'stock') {
+    inicializarControlStock();
   } else {
     mostrarCategorias();
   }
