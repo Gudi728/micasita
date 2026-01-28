@@ -33,7 +33,7 @@
   </header>
   <main class="wrap">
     <a href="index.html" class="btn-volver"> Volver</a>
-    <h1>Electrónica</h1>
+    <h1 id="titulo-categoria">Electrónica</h1>
     <section class="productos" id="productos-container"></section>
   </main>
   <div id="modal-sobre nosotros" class="modal" role="dialog" aria-hidden="true">
@@ -60,7 +60,15 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase.js"></script>
   <script>
-    const CATEGORIA_NOMBRE = 'Electrónica';
+    // Obtener categoría del parámetro URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const CATEGORIA_NOMBRE = urlParams.get('categoria') || 'Electrónica';
+    
+    // Actualizar título
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('titulo-categoria').textContent = CATEGORIA_NOMBRE;
+    });
+    
     function irInicio() { window.location.href = 'index.html'; }
     function mostrarVentana(tipo) {
       const m = document.getElementById('modal-' + tipo);
@@ -72,8 +80,10 @@
     }
     async function cargarProductos() {
       const c = document.getElementById('productos-container');
+      console.log('🔍 Buscando productos de categoría:', CATEGORIA_NOMBRE);
       const p = await DataManager.obtenerProductosPorCategoria(CATEGORIA_NOMBRE);
-      if(p.length === 0) { c.innerHTML = '<div class="sin-productos">No hay productos</div>'; return; }
+      console.log('📦 Productos encontrados:', p.length);
+      if(p.length === 0) { c.innerHTML = '<div class="sin-productos">No hay productos en esta categoría</div>'; return; }
       c.innerHTML = p.map(prod => `<div class="producto-card"><img src="${prod.imagen}" alt="${prod.nombre}" class="producto-imagen"><div class="producto-contenido"><h3 class="producto-titulo">${prod.nombre}</h3><p class="producto-precio">$${parseFloat(prod.precio).toFixed(2)}</p><p class="producto-descripcion">${prod.descripcion || ''}</p><a href="https://wa.me/543533518390?text=Consulta:%20${encodeURIComponent(prod.nombre)}" target="_blank" class="btn-consultar">Consultar</a></div></div>`).join('');
     }
     document.addEventListener('DOMContentLoaded', cargarProductos);

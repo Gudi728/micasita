@@ -127,8 +127,7 @@ const DataManager = {
       const { data, error } = await supabaseClient
         .from('productos')
         .select('*')
-        .eq('categoria', categoriaNombre)
-        .gt('stock', 0);
+        .eq('categoria', categoriaNombre);
       
       if (error) throw error;
       return data || [];
