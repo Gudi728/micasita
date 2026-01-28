@@ -415,9 +415,7 @@ async cargarProductosConStock() {
       return 0;
     }
   }
-  };
-  reader.readAsDataURL(archivo);
-}
+};
 
 function mostrarMensaje(texto, tipo = 'exito') {
   const mensaje = document.createElement('div');
