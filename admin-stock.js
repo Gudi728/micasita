@@ -365,6 +365,5 @@ function cerrarModalCaja() {
     modal.remove();
   }
 }
-    modal.remove();
   }
 }
