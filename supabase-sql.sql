@@ -5,7 +5,7 @@
 -- ========================================================
 
 -- Crear tabla de categorías
-CREATE TABLE public.categorias (
+CREATE TABLE IF NOT EXISTS public.categorias (
   id BIGSERIAL PRIMARY KEY,
   nombre TEXT NOT NULL UNIQUE,
   imagen TEXT NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE public.categorias (
 );
 
 -- Crear tabla de productos
-CREATE TABLE public.productos (
+CREATE TABLE IF NOT EXISTS public.productos (
   id BIGSERIAL PRIMARY KEY,
   nombre TEXT NOT NULL,
   precio NUMERIC NOT NULL,
@@ -28,35 +28,43 @@ ALTER TABLE public.categorias ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.productos ENABLE ROW LEVEL SECURITY;
 
 -- Políticas de LECTURA (SELECT) - Público
+DROP POLICY IF EXISTS "Lectura pública categorías" ON public.categorias;
 CREATE POLICY "Lectura pública categorías" ON public.categorias
   FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Lectura pública productos" ON public.productos;
 CREATE POLICY "Lectura pública productos" ON public.productos
   FOR SELECT USING (true);
 
 -- Políticas de INSERCIÓN (INSERT) - Público (sin autenticación)
+DROP POLICY IF EXISTS "Insertar categorías" ON public.categorias;
 CREATE POLICY "Insertar categorías" ON public.categorias
   FOR INSERT WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Insertar productos" ON public.productos;
 CREATE POLICY "Insertar productos" ON public.productos
   FOR INSERT WITH CHECK (true);
 
 -- Políticas de ACTUALIZACIÓN (UPDATE) - Público
+DROP POLICY IF EXISTS "Actualizar categorías" ON public.categorias;
 CREATE POLICY "Actualizar categorías" ON public.categorias
   FOR UPDATE USING (true);
 
+DROP POLICY IF EXISTS "Actualizar productos" ON public.productos;
 CREATE POLICY "Actualizar productos" ON public.productos
   FOR UPDATE USING (true);
 
 -- Políticas de ELIMINACIÓN (DELETE) - Público
+DROP POLICY IF EXISTS "Eliminar categorías" ON public.categorias;
 CREATE POLICY "Eliminar categorías" ON public.categorias
   FOR DELETE USING (true);
 
+DROP POLICY IF EXISTS "Eliminar productos" ON public.productos;
 CREATE POLICY "Eliminar productos" ON public.productos
   FOR DELETE USING (true);
 
 -- ========================================================
--- INSERTAR CATEGORÍAS POR DEFECTO
+-- INSERTAR CATEGORÍAS POR DEFECTO (si no existen)
 -- ========================================================
 
 INSERT INTO public.categorias (nombre, imagen) VALUES
@@ -67,7 +75,8 @@ INSERT INTO public.categorias (nombre, imagen) VALUES
   ('Bazar', 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%23f358ba" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="40" text-anchor="middle" dominant-baseline="middle" fill="white"%3E🛒%3C/text%3E%3C/svg%3E'),
   ('Blanquería', 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%23f358ba" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="40" text-anchor="middle" dominant-baseline="middle" fill="white"%3E🛏️%3C/text%3E%3C/svg%3E'),
   ('Freidoras de aire', 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%23f358ba" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="40" text-anchor="middle" dominant-baseline="middle" fill="white"%3E🍟%3C/text%3E%3C/svg%3E'),
-  ('Droguería', 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%23f358ba" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="40" text-anchor="middle" dominant-baseline="middle" fill="white"%3E💊%3C/text%3E%3C/svg%3E');
+  ('Droguería', 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%23f358ba" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="40" text-anchor="middle" dominant-baseline="middle" fill="white"%3E💊%3C/text%3E%3C/svg%3E')
+ON CONFLICT (nombre) DO NOTHING;
 
 -- ========================================================
 -- FIN DEL SCRIPT - Después de ejecutar:
