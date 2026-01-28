@@ -321,6 +321,70 @@ function convertirImagenABase64(archivo, callback) {
       console.error('Error al obtener ganancias:', error);
       return 0;
     }
+  },
+
+  // === FUNCIONES DE CAJA ===
+
+  // Registrar movimiento de caja
+  async registrarMovimientoCaja(tipo, monto, descripcion, relacionadoA = null) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('movimientos_caja')
+        .insert([{
+          tipo,
+          monto,
+          descripcion,
+          relacionado_a: relacionadoA
+        }])
+        .select();
+
+      if (error) throw error;
+      return data[0];
+    } catch (error) {
+      console.error('Error al registrar movimiento de caja:', error);
+      return null;
+    }
+  },
+
+  // Obtener movimientos de caja
+  async cargarMovimientosCaja() {
+    try {
+      const { data, error } = await supabaseClient
+        .from('movimientos_caja')
+        .select('*')
+        .order('fecha', { ascending: false });
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error al cargar movimientos de caja:', error);
+      return [];
+    }
+  },
+
+  // Obtener saldo de caja
+  async obtenerSaldoCaja() {
+    try {
+      const { data, error } = await supabaseClient
+        .from('movimientos_caja')
+        .select('tipo, monto');
+
+      if (error) throw error;
+
+      let saldo = 0;
+      data.forEach(mov => {
+        if (mov.tipo === 'ingreso' || mov.tipo === 'venta') {
+          saldo += parseFloat(mov.monto) || 0;
+        } else if (mov.tipo === 'egreso') {
+          saldo -= parseFloat(mov.monto) || 0;
+        }
+      });
+
+      return saldo;
+    } catch (error) {
+      console.error('Error al obtener saldo de caja:', error);
+      return 0;
+    }
   }
   };
   reader.readAsDataURL(archivo);

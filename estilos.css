@@ -710,3 +710,190 @@ button:focus,
 .total-ganancias strong {
   font-size: 1.8rem;
 }
+
+/* ===== ESTILOS PARA CONTROL DE CAJA ===== */
+
+.control-caja {
+  margin-top: 20px;
+}
+
+.caja-resumen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.caja-stat {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-top: 4px solid;
+}
+
+.caja-stat h4 {
+  margin: 0 0 10px 0;
+  color: #666;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.caja-stat.total {
+  border-top-color: var(--color-secundario);
+  background: linear-gradient(135deg, rgba(243, 88, 186, 0.05), rgba(243, 88, 186, 0.1));
+}
+
+.caja-stat.ingresos {
+  border-top-color: #27ae60;
+  background: linear-gradient(135deg, rgba(39, 174, 96, 0.05), rgba(39, 174, 96, 0.1));
+}
+
+.caja-stat.egresos {
+  border-top-color: #e74c3c;
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.05), rgba(231, 76, 60, 0.1));
+}
+
+.saldo-valor {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-secundario);
+}
+
+.caja-stat.ingresos p {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+  color: #27ae60;
+}
+
+.caja-stat.egresos p {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+  color: #e74c3c;
+}
+
+.caja-operaciones {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.caja-operaciones h4 {
+  margin-top: 0;
+  color: var(--color-text);
+  border-bottom: 2px solid var(--color-secundario);
+  padding-bottom: 10px;
+}
+
+.botones-caja {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.btn-ingreso,
+.btn-egreso {
+  flex: 1;
+  min-width: 150px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.btn-ingreso {
+  background: #27ae60;
+  color: white;
+}
+
+.btn-ingreso:hover {
+  background: #229954;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+.btn-egreso {
+  background: #e74c3c;
+  color: white;
+}
+
+.btn-egreso:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.movimientos-list {
+  margin-top: 20px;
+}
+
+.tabla-movimientos {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.tabla-movimientos thead {
+  background: #f5f5f5;
+  border-bottom: 2px solid var(--color-secundario);
+}
+
+.tabla-movimientos th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.tabla-movimientos td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.tabla-movimientos tbody tr:hover {
+  background: #f9f9f9;
+}
+
+.tipo-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.tipo-ingreso {
+  background: rgba(39, 174, 96, 0.2);
+  color: #27ae60;
+}
+
+.tipo-egreso {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+
+.tipo-venta {
+  background: rgba(52, 152, 219, 0.2);
+  color: #3498db;
+}
+
+.monto-ingreso,
+.monto-venta {
+  color: #27ae60;
+  font-weight: 600;
+}
+
+.monto-egreso {
+  color: #e74c3c;
+  font-weight: 600;
+}

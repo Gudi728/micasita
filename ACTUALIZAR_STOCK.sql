@@ -33,6 +33,28 @@ DROP POLICY IF EXISTS "Insertar ventas" ON public.ventas;
 CREATE POLICY "Insertar ventas" ON public.ventas
   FOR INSERT WITH CHECK (true);
 
+-- Crear tabla de movimientos de caja
+CREATE TABLE IF NOT EXISTS public.movimientos_caja (
+  id BIGSERIAL PRIMARY KEY,
+  tipo TEXT NOT NULL CHECK (tipo IN ('ingreso', 'egreso', 'venta')),
+  monto NUMERIC NOT NULL,
+  descripcion TEXT NOT NULL,
+  relacionado_a TEXT,
+  fecha TIMESTAMP DEFAULT NOW()
+);
+
+-- Habilitar RLS en tabla de movimientos caja
+ALTER TABLE public.movimientos_caja ENABLE ROW LEVEL SECURITY;
+
+-- Políticas para la tabla de movimientos caja
+DROP POLICY IF EXISTS "Lectura movimientos caja" ON public.movimientos_caja;
+CREATE POLICY "Lectura movimientos caja" ON public.movimientos_caja
+  FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Insertar movimientos caja" ON public.movimientos_caja;
+CREATE POLICY "Insertar movimientos caja" ON public.movimientos_caja
+  FOR INSERT WITH CHECK (true);
+
 -- ========================================================
 -- FIN DEL SCRIPT
 -- ========================================================

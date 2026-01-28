@@ -155,13 +155,14 @@ async function confirmarVenta(productoId) {
   const resultado = await DataManager.registrarVenta(productoId, cantidad, precio);
 
   if (resultado) {
-    mostrarMensaje(`Venta registrada. Ganancia: $${resultado.ganancia.toFixed(2)}`, 'exito');
-    cerrarModalVenta();
-    mostrarControlStock();
-    mostrarHistorialVentas();
-  } else {
-    mostrarMensaje('Error al registrar la venta', 'error');
-  }
+        // Registrar en caja automáticamente
+        await DataManager.registrarMovimientoCaja('venta', resultado.ganancia * cantidad, `Venta de producto`, 'venta');
+        
+        mostrarMensaje(`Venta registrada. Ganancia: $${resultado.ganancia.toFixed(2)}`, 'exito');
+        cerrarModalVenta();
+        mostrarControlStock();
+        mostrarHistorialVentas();
+        mostrarControlCaja();
 }
 
 // Cerrar modal de venta
@@ -222,4 +223,131 @@ async function mostrarHistorialVentas() {
 async function inicializarControlStock() {
   await mostrarControlStock();
   await mostrarHistorialVentas();
+  await mostrarControlCaja();
+}
+
+// === CONTROL DE CAJA ===
+
+// Mostrar control de caja
+async function mostrarControlCaja() {
+  const movimientos = await DataManager.cargarMovimientosCaja();
+  const saldo = await DataManager.obtenerSaldoCaja();
+  const contenedor = document.getElementById('control-caja');
+
+  let totalIngresos = 0;
+  let totalEgresos = 0;
+
+  movimientos.forEach(mov => {
+    if (mov.tipo === 'ingreso' || mov.tipo === 'venta') {
+      totalIngresos += parseFloat(mov.monto) || 0;
+    } else if (mov.tipo === 'egreso') {
+      totalEgresos += parseFloat(mov.monto) || 0;
+    }
+  });
+
+  contenedor.innerHTML = `
+    <div class="caja-resumen">
+      <div class="caja-stat total">
+        <h4>Saldo Total</h4>
+        <p class="saldo-valor">$${saldo.toFixed(2)}</p>
+      </div>
+      <div class="caja-stat ingresos">
+        <h4>Ingresos</h4>
+        <p>$${totalIngresos.toFixed(2)}</p>
+      </div>
+      <div class="caja-stat egresos">
+        <h4>Egresos</h4>
+        <p>$${totalEgresos.toFixed(2)}</p>
+      </div>
+    </div>
+
+    <div class="caja-operaciones">
+      <h4>Movimientos de Caja</h4>
+      <div class="botones-caja">
+        <button class="btn-ingreso" onclick="abrirFormularioMovimientoCaja('ingreso')">+ Ingresar Dinero</button>
+        <button class="btn-egreso" onclick="abrirFormularioMovimientoCaja('egreso')">- Sacar Dinero</button>
+      </div>
+
+      <div class="movimientos-list">
+        ${movimientos.length === 0 ? '<div class="sin-contenido">No hay movimientos de caja</div>' : `
+          <table class="tabla-movimientos">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Descripción</th>
+                <th>Monto</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${movimientos.map(mov => `
+                <tr class="movimiento-${mov.tipo}">
+                  <td>${new Date(mov.fecha).toLocaleString('es-AR')}</td>
+                  <td><span class="tipo-badge tipo-${mov.tipo}">${mov.tipo.charAt(0).toUpperCase() + mov.tipo.slice(1)}</span></td>
+                  <td>${mov.descripcion}</td>
+                  <td class="monto-${mov.tipo}">${mov.tipo === 'ingreso' || mov.tipo === 'venta' ? '+' : '-'}$${parseFloat(mov.monto).toFixed(2)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `}
+      </div>
+    </div>
+  `;
+}
+
+// Abrir formulario de movimiento de caja
+function abrirFormularioMovimientoCaja(tipo) {
+  const modal = document.createElement('div');
+  modal.className = 'modal-venta';
+  modal.innerHTML = `
+    <div class="modal-contenido">
+      <h3>${tipo === 'ingreso' ? 'Ingresar Dinero' : 'Sacar Dinero'}</h3>
+      <div class="form-venta">
+        <div class="form-group">
+          <label>Monto ($):</label>
+          <input type="number" id="monto-movimiento" step="0.01" min="0.01" placeholder="0.00">
+        </div>
+        <div class="form-group">
+          <label>Descripción:</label>
+          <textarea id="descripcion-movimiento" placeholder="Ej: Pago de proveedor, Cambio, etc." rows="3"></textarea>
+        </div>
+        <div class="modal-botones">
+          <button class="btn-confirmar" onclick="confirmarMovimientoCaja('${tipo}')">Confirmar</button>
+          <button class="btn-cancelar" onclick="cerrarModalCaja()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+}
+
+// Confirmar movimiento de caja
+async function confirmarMovimientoCaja(tipo) {
+  const monto = parseFloat(document.getElementById('monto-movimiento').value);
+  const descripcion = document.getElementById('descripcion-movimiento').value.trim();
+
+  if (!monto || monto <= 0) {
+    mostrarMensaje('Ingresa un monto válido', 'error');
+    return;
+  }
+
+  if (!descripcion) {
+    mostrarMensaje('Ingresa una descripción', 'error');
+    return;
+  }
+
+  await DataManager.registrarMovimientoCaja(tipo, monto, descripcion);
+  mostrarMensaje(`Movimiento registrado correctamente`, 'exito');
+  cerrarModalCaja();
+  mostrarControlCaja();
+}
+
+// Cerrar modal de caja
+function cerrarModalCaja() {
+  const modal = document.querySelector('.modal-venta');
+  if (modal) {
+    modal.remove();
+  }
 }
