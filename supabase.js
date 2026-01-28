@@ -295,14 +295,37 @@ const DataManager = {
     try {
       const { data, error } = await supabaseClient
         .from('ventas')
-        .select(`
-          *,
-          productos:producto_id(nombre, precio)
-        `)
+        .select('*')
         .order('fecha_venta', { ascending: false });
       
-      if (error) throw error;
-      return data || [];
+      if (error) {
+        console.error('Error Supabase al cargar ventas:', error.message);
+        throw error;
+      }
+
+      // Cargar nombres de productos para cada venta
+      const ventasConProductos = await Promise.all(data.map(async (venta) => {
+        try {
+          const { data: producto } = await supabaseClient
+            .from('productos')
+            .select('nombre, precio')
+            .eq('id', venta.producto_id)
+            .single();
+          
+          return {
+            ...venta,
+            productos: producto || { nombre: 'Producto no encontrado', precio: 0 }
+          };
+        } catch (e) {
+          console.error('Error al cargar producto:', e);
+          return {
+            ...venta,
+            productos: { nombre: 'Producto eliminado', precio: 0 }
+          };
+        }
+      }));
+
+      return ventasConProductos || [];
     } catch (error) {
       console.error('Error al cargar ventas:', error);
       return [];

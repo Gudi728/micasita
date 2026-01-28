@@ -66,11 +66,13 @@ async function mostrarControlStock() {
     });
   } catch (error) {
     console.error('❌ Error al cargar control de stock:', error);
+    console.error('Stack:', error.stack);
     const contenedor = document.getElementById('lista-stock');
     contenedor.innerHTML = `
       <div class="sin-contenido" style="color: red;">
         <p>⚠️ Error al cargar el control de stock</p>
-        <p style="font-size: 0.9rem; margin: 10px 0;">${error.message}</p>
+        <p style="font-size: 0.9rem; margin: 10px 0;"><strong>Error:</strong> ${error.message}</p>
+        <p style="font-size: 0.85rem; margin: 10px 0; color: #999; word-break: break-all;">${error.stack}</p>
         <button onclick="mostrarControlStock()" class="btn-refrescar">🔄 Reintentar</button>
       </div>
     `;
@@ -253,9 +255,27 @@ async function mostrarHistorialVentas() {
 
 // Inicializar control de stock
 async function inicializarControlStock() {
-  await mostrarControlStock();
-  await mostrarHistorialVentas();
-  await mostrarControlCaja();
+  console.log('🚀 Inicializando Control de Stock...');
+  try {
+    await mostrarControlStock();
+    console.log('✅ Control de stock cargado');
+  } catch (error) {
+    console.error('❌ Error en mostrarControlStock:', error);
+  }
+  
+  try {
+    await mostrarHistorialVentas();
+    console.log('✅ Historial de ventas cargado');
+  } catch (error) {
+    console.error('❌ Error en mostrarHistorialVentas:', error);
+  }
+  
+  try {
+    await mostrarControlCaja();
+    console.log('✅ Control de caja cargado');
+  } catch (error) {
+    console.error('❌ Error en mostrarControlCaja:', error);
+  }
 }
 
 // === CONTROL DE CAJA ===
