@@ -5,6 +5,7 @@ async function mostrarControlStock() {
   try {
     console.log('🔄 Cargando productos para control de stock...');
     const productos = await DataManager.cargarProductosConStock();
+    const inventario = await DataManager.obtenerValorInventario();
     const contenedor = document.getElementById('lista-stock');
 
     console.log('✅ Productos encontrados:', productos.length);
@@ -23,7 +24,36 @@ async function mostrarControlStock() {
       return;
     }
 
-    contenedor.innerHTML = productos.map(prod => `
+    // Crear resumen financiero
+    const resumenHTML = `
+      <div class="inventario-resumen" style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #2ecc71;">
+        <h3 style="margin-top: 0; color: #333;">📊 RESUMEN DE INVENTARIO</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+          <div style="background: white; padding: 15px; border-radius: 6px; border: 1px solid #e0e0e0;">
+            <p style="margin: 0; font-size: 0.85rem; color: #666;">Total de Productos</p>
+            <p style="margin: 5px 0 0 0; font-size: 1.5rem; font-weight: bold; color: #333;">${inventario.cantidadProductos}</p>
+          </div>
+          <div style="background: white; padding: 15px; border-radius: 6px; border: 1px solid #e0e0e0;">
+            <p style="margin: 0; font-size: 0.85rem; color: #666;">Total de Items</p>
+            <p style="margin: 5px 0 0 0; font-size: 1.5rem; font-weight: bold; color: #333;">${inventario.totalItems}</p>
+          </div>
+          <div style="background: white; padding: 15px; border-radius: 6px; border: 1px solid #e0e0e0;">
+            <p style="margin: 0; font-size: 0.85rem; color: #666;">💰 Valor por Costo</p>
+            <p style="margin: 5px 0 0 0; font-size: 1.5rem; font-weight: bold; color: #e74c3c;">$${inventario.valorCosto.toFixed(2)}</p>
+          </div>
+          <div style="background: white; padding: 15px; border-radius: 6px; border: 1px solid #e0e0e0;">
+            <p style="margin: 0; font-size: 0.85rem; color: #666;">💵 Valor por Venta</p>
+            <p style="margin: 5px 0 0 0; font-size: 1.5rem; font-weight: bold; color: #2ecc71;">$${inventario.valorVenta.toFixed(2)}</p>
+          </div>
+          <div style="background: #fff3cd; padding: 15px; border-radius: 6px; border: 1px solid #ffc107;">
+            <p style="margin: 0; font-size: 0.85rem; color: #856404;">📈 Ganancia Potencial</p>
+            <p style="margin: 5px 0 0 0; font-size: 1.5rem; font-weight: bold; color: #f39c12;">$${inventario.gananciaTotal.toFixed(2)}</p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    contenedor.innerHTML = resumenHTML + productos.map(prod => `
       <div class="item-stock">
         <div class="stock-info">
           <h3>${prod.nombre}</h3>
@@ -44,6 +74,10 @@ async function mostrarControlStock() {
             <div class="dato">
               <label>Ganancia (Unitaria):</label>
               <span class="ganancia-unitaria">$${(Math.max(0, (prod.precio_venta_admin || prod.precio || 0) - (prod.precio_costo || 0))).toFixed(2)}</span>
+            </div>
+            <div class="dato" style="background: #f0f0f0; padding: 8px; border-radius: 4px; border-left: 3px solid #3498db;">
+              <p style="margin: 0; font-size: 0.85rem; color: #666;">Valor en Costo: <strong>$${((prod.stock || 0) * (parseFloat(prod.precio_costo) || 0)).toFixed(2)}</strong></p>
+              <p style="margin: 5px 0 0 0; font-size: 0.85rem; color: #666;">Valor en Venta: <strong>$${((prod.stock || 0) * (parseFloat(prod.precio_venta_admin) || parseFloat(prod.precio) || 0)).toFixed(2)}</strong></p>
             </div>
           </div>
           <div class="stock-acciones">

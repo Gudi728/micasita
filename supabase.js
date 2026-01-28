@@ -121,6 +121,36 @@ const DataManager = {
     }
   },
 
+  // Obtener valor total del inventario
+  async obtenerValorInventario() {
+    try {
+      const productos = await this.cargarProductosConStock();
+      
+      let valorCosto = 0;
+      let valorVenta = 0;
+      
+      productos.forEach(prod => {
+        const stock = prod.stock || 0;
+        const costo = parseFloat(prod.precio_costo) || 0;
+        const venta = parseFloat(prod.precio_venta_admin) || parseFloat(prod.precio) || 0;
+        
+        valorCosto += (stock * costo);
+        valorVenta += (stock * venta);
+      });
+      
+      return {
+        valorCosto,
+        valorVenta,
+        gananciaTotal: Math.max(0, valorVenta - valorCosto),
+        cantidadProductos: productos.length,
+        totalItems: productos.reduce((sum, p) => sum + (p.stock || 0), 0)
+      };
+    } catch (error) {
+      console.error('Error al obtener valor del inventario:', error);
+      return { valorCosto: 0, valorVenta: 0, gananciaTotal: 0, cantidadProductos: 0, totalItems: 0 };
+    }
+  },
+
   // Obtener productos por categoría (para vista pública)
   async obtenerProductosPorCategoria(categoriaNombre) {
     try {
