@@ -409,4 +409,3 @@ function cerrarModalCaja() {
     modal.remove();
   }
 }
-}
