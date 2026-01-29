@@ -208,28 +208,16 @@ const DataManager = {
 
       console.log('📝 Editando producto:', { id, nombre, precio, categoria, descripcion });
 
-      // Obtener el producto actual para saber si tiene precio_venta_admin personalizado
-      const { data: productoActual, error: errorProducto } = await supabaseClient
-        .from('productos')
-        .select('precio_venta_admin')
-        .eq('id', id)
-        .single();
-      if (errorProducto) {
-        console.error('Error al obtener producto actual:', errorProducto.message);
-        throw errorProducto;
-      }
 
-      // Si el producto no tiene precio_venta_admin personalizado, lo igualamos al nuevo precio
+      // Siempre actualizar precio_venta_admin con el nuevo precio
       let updateFields = {
         nombre: nombre.trim(),
         precio: parseFloat(precio),
         categoria: categoria.trim(),
         imagen,
-        descripcion: descripcion.trim()
+        descripcion: descripcion.trim(),
+        precio_venta_admin: parseFloat(precio)
       };
-      if (!productoActual || productoActual.precio_venta_admin === null || productoActual.precio_venta_admin === undefined) {
-        updateFields.precio_venta_admin = parseFloat(precio);
-      }
 
       const { data, error } = await supabaseClient
         .from('productos')
