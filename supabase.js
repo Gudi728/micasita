@@ -170,23 +170,30 @@ const DataManager = {
   // Agregar nuevo producto
   async agregarProducto(nombre, precio, categoria, imagen, descripcion, stock = 0, precioCosto = 0) {
     try {
+      console.log('➕ Agregando nuevo producto:', { nombre, precio, categoria, descripcion });
+
       const { data, error } = await supabaseClient
         .from('productos')
         .insert([{ 
-          nombre, 
-          precio, 
-          categoria, 
+          nombre: nombre.trim(), 
+          precio: parseFloat(precio),
+          categoria: categoria.trim(), 
           imagen, 
-          descripcion,
+          descripcion: descripcion.trim(),
           stock,
           precio_costo: precioCosto
         }])
         .select();
       
-      if (error) throw error;
-      return data[0];
+      if (error) {
+        console.error('Error Supabase al agregar producto:', error.message);
+        throw error;
+      }
+
+      console.log('✅ Producto agregado exitosamente:', data[0]);
+      return data && data.length > 0 ? data[0] : null;
     } catch (error) {
-      console.error('Error al agregar producto:', error);
+      console.error('❌ Error al agregar producto:', error.message);
       return null;
     }
   },
@@ -194,16 +201,39 @@ const DataManager = {
   // Editar producto existente
   async editarProducto(id, nombre, precio, categoria, imagen, descripcion) {
     try {
+      if (!id) {
+        console.error('ID de producto no proporcionado');
+        return null;
+      }
+
+      console.log('📝 Editando producto:', { id, nombre, precio, categoria, descripcion });
+
       const { data, error } = await supabaseClient
         .from('productos')
-        .update({ nombre, precio, categoria, imagen, descripcion })
+        .update({ 
+          nombre: nombre.trim(), 
+          precio: parseFloat(precio),
+          categoria: categoria.trim(), 
+          imagen, 
+          descripcion: descripcion.trim()
+        })
         .eq('id', id)
         .select();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error Supabase al editar producto:', error.message);
+        throw error;
+      }
+
+      if (!data || data.length === 0) {
+        console.warn('⚠️ Producto no encontrado o no actualizado');
+        return null;
+      }
+
+      console.log('✅ Producto editado exitosamente:', data[0]);
       return data[0];
     } catch (error) {
-      console.error('Error al editar producto:', error);
+      console.error('❌ Error al editar producto:', error.message);
       return null;
     }
   },

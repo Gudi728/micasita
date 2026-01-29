@@ -157,22 +157,46 @@ document.getElementById('form-producto').addEventListener('submit', async functi
   if (inputImagen.files.length > 0) {
     convertirImagenABase64(inputImagen.files[0], async function(base64) {
       if (id) {
-        await DataManager.editarProducto(id, nombre, precio, categoria, base64, descripcion);
-        mostrarMensaje('Producto actualizado', 'exito');
+        console.log('🔄 Editando producto:', id);
+        const resultado = await DataManager.editarProducto(id, nombre, precio, categoria, base64, descripcion);
+        if (resultado) {
+          console.log('✅ Producto actualizado:', resultado);
+          mostrarMensaje('Producto actualizado', 'exito');
+        } else {
+          console.error('❌ Error al actualizar producto');
+          mostrarMensaje('Error al actualizar producto', 'error');
+          return;
+        }
       } else {
-        await DataManager.agregarProducto(nombre, precio, categoria, base64, descripcion);
-        mostrarMensaje('Producto agregado', 'exito');
+        console.log('➕ Agregando nuevo producto');
+        const resultado = await DataManager.agregarProducto(nombre, precio, categoria, base64, descripcion);
+        if (resultado) {
+          console.log('✅ Producto agregado:', resultado);
+          mostrarMensaje('Producto agregado', 'exito');
+        } else {
+          console.error('❌ Error al agregar producto');
+          mostrarMensaje('Error al agregar producto', 'error');
+          return;
+        }
       }
       limpiarFormProducto();
-      mostrarProductos();
+      await mostrarProductos();
     });
   } else if (id) {
+    console.log('🔄 Editando producto sin imagen:', id);
     const productos = await DataManager.cargarProductos();
     const prod = productos.find(p => p.id === id);
-    await DataManager.editarProducto(id, nombre, precio, categoria, prod.imagen, descripcion);
-    mostrarMensaje('Producto actualizado', 'exito');
+    const resultado = await DataManager.editarProducto(id, nombre, precio, categoria, prod.imagen, descripcion);
+    if (resultado) {
+      console.log('✅ Producto actualizado:', resultado);
+      mostrarMensaje('Producto actualizado', 'exito');
+    } else {
+      console.error('❌ Error al actualizar producto');
+      mostrarMensaje('Error al actualizar producto', 'error');
+      return;
+    }
     limpiarFormProducto();
-    mostrarProductos();
+    await mostrarProductos();
   } else {
     mostrarMensaje('Debes seleccionar una imagen', 'error');
   }
@@ -211,8 +235,17 @@ async function mostrarProductos() {
 }
 
 async function editarProducto(id) {
+  console.log('📝 Cargando producto para editar:', id);
   const productos = await DataManager.cargarProductos();
   const prod = productos.find(p => p.id === id);
+  
+  if (!prod) {
+    console.error('❌ Producto no encontrado:', id);
+    mostrarMensaje('Producto no encontrado', 'error');
+    return;
+  }
+
+  console.log('✅ Producto encontrado:', prod);
   
   await cargarSelectCategorias();
   
@@ -220,7 +253,7 @@ async function editarProducto(id) {
   document.getElementById('prod-nombre').value = prod.nombre;
   document.getElementById('prod-precio').value = prod.precio;
   document.getElementById('prod-categoria').value = prod.categoria;
-  document.getElementById('prod-descripcion').value = prod.descripcion;
+  document.getElementById('prod-descripcion').value = prod.descripcion || '';
   document.getElementById('prod-preview').src = prod.imagen;
   document.getElementById('prod-preview').style.display = 'block';
   document.getElementById('btn-guardar-prod').textContent = 'Actualizar producto';
