@@ -258,6 +258,7 @@ async function mostrarHistorialVentas() {
             <th>Precio Unitario</th>
             <th>Ganancia Unitaria</th>
             <th>Ganancia Total</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -271,6 +272,7 @@ async function mostrarHistorialVentas() {
                 <td>$${parseFloat(venta.precio_unitario).toFixed(2)}</td>
                 <td>$${parseFloat(venta.ganancia_unitaria).toFixed(2)}</td>
                 <td><strong>$${parseFloat(venta.ganancia_total).toFixed(2)}</strong></td>
+                <td><button class="btn-anular-venta" title="Anular venta" style="color:#fff;background:#e74c3c;border:none;padding:4px 8px;border-radius:3px;font-size:1.1em;cursor:pointer;" onclick="anularVenta(${venta.id})">✖</button></td>
               </tr>
             `;
           }).join('')}
@@ -280,6 +282,19 @@ async function mostrarHistorialVentas() {
         <h3>Ganancia Total: <strong>$${totalGanancia.toFixed(2)}</strong></h3>
       </div>
     `;
+  // Anular venta
+  window.anularVenta = async function(ventaId) {
+    if (confirm('¿Seguro que quieres anular esta venta?')) {
+      const ok = await DataManager.anularVenta(ventaId);
+      if (ok) {
+        mostrarMensaje('Venta anulada correctamente', 'exito');
+        await mostrarHistorialVentas();
+        await recargarControlStock && recargarControlStock();
+      } else {
+        mostrarMensaje('Error al anular la venta', 'error');
+      }
+    }
+  }
   } catch (error) {
     console.error('❌ Error al cargar historial de ventas:', error);
     const contenedor = document.getElementById('historial-ventas');

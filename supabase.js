@@ -1,3 +1,17 @@
+  // Anular (eliminar) una venta por ID
+  async anularVenta(ventaId) {
+    try {
+      const { error } = await supabaseClient
+        .from('ventas')
+        .delete()
+        .eq('id', ventaId);
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error al anular venta:', error);
+      return false;
+    }
+  },
 // Configuración de Supabase
 const SUPABASE_URL = 'https://bondnynacnzvwfojkrpc.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_15SL0Y_XssCN9EBHk3pP9g_LRwyeiCJ';
