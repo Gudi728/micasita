@@ -4,8 +4,20 @@
 let editandoCategoria = null;
 let editandoProducto = null;
 
-// Cambiar entre tabs
-function cambiarTab(tab) {
+// Función auxiliar para recargar Control de Stock
+async function recargarControlStock() {
+  try {
+    if (typeof mostrarControlStock === 'function') {
+      console.log('🔄 Recargando Control de Stock...');
+      await mostrarControlStock();
+      console.log('✅ Control de Stock recargado');
+    }
+  } catch (error) {
+    console.error('❌ Error al recargar Control de Stock:', error);
+  }
+}
+
+// === CATEGORÍAS ===
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('activo'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
   document.getElementById(`tab-${tab}`).classList.add('activo');
@@ -188,10 +200,7 @@ document.getElementById('form-producto').addEventListener('submit', async functi
           mostrarMensaje('Producto actualizado', 'exito');
           limpiarFormProducto();
           await mostrarProductos();
-          // Recargar control de stock si está abierto
-          if (typeof mostrarControlStock === 'function') {
-            await mostrarControlStock();
-          }
+          await recargarControlStock();
         } else {
           console.error('❌ Error al actualizar producto');
           mostrarMensaje('Error al actualizar producto', 'error');
@@ -221,10 +230,7 @@ document.getElementById('form-producto').addEventListener('submit', async functi
         mostrarMensaje('Producto actualizado', 'exito');
         limpiarFormProducto();
         await mostrarProductos();
-        // Recargar control de stock si está abierto
-        if (typeof mostrarControlStock === 'function') {
-          await mostrarControlStock();
-        }
+        await recargarControlStock();
       } else {
         console.error('❌ Error al actualizar producto');
         mostrarMensaje('Error al actualizar producto', 'error');
