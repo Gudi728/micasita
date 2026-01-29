@@ -379,6 +379,7 @@ async function mostrarControlCaja() {
                   <th>Tipo</th>
                   <th>Descripción</th>
                   <th>Monto</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -388,6 +389,9 @@ async function mostrarControlCaja() {
                     <td><span class="tipo-badge tipo-${mov.tipo}">${mov.tipo.charAt(0).toUpperCase() + mov.tipo.slice(1)}</span></td>
                     <td>${mov.descripcion}</td>
                     <td class="monto-${mov.tipo}">${mov.tipo === 'ingreso' || mov.tipo === 'venta' ? '+' : '-'}$${parseFloat(mov.monto).toFixed(2)}</td>
+                    <td>
+                      <button title="Anular movimiento" class="btn-anular-movimiento" style="color: #e74c3c; background: none; border: none; font-size: 1.2em; cursor: pointer;" onclick="anularMovimientoCaja(${mov.id})">❌</button>
+                    </td>
                   </tr>
                 `).join('')}
               </tbody>
@@ -396,6 +400,17 @@ async function mostrarControlCaja() {
         </div>
       </div>
     `;
+      // Hacer global la función para el botón
+      window.anularMovimientoCaja = async function(movimientoId) {
+        if (!confirm('¿Seguro que deseas anular este movimiento de caja? Esta acción no se puede deshacer.')) return;
+        const ok = await DataManager.anularMovimientoCaja(movimientoId);
+        if (ok) {
+          mostrarMensaje('Movimiento de caja anulado', 'exito');
+          mostrarControlCaja();
+        } else {
+          mostrarMensaje('No se pudo anular el movimiento', 'error');
+        }
+      };
   } catch (error) {
     console.error('❌ Error al cargar control de caja:', error);
     const contenedor = document.getElementById('control-caja');

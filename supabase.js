@@ -1,3 +1,17 @@
+    // Anular (eliminar) movimiento de caja por id
+    async anularMovimientoCaja(movimientoId) {
+      try {
+        const { error } = await supabaseClient
+          .from('movimientos_caja')
+          .delete()
+          .eq('id', movimientoId);
+        if (error) throw error;
+        return true;
+      } catch (error) {
+        console.error('Error al anular movimiento de caja:', error);
+        return false;
+      }
+    },
   // Anular (eliminar) una venta por ID
   async anularVenta(ventaId) {
     try {
