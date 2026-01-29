@@ -18,11 +18,18 @@ async function recargarControlStock() {
 }
 
 // === CATEGORÍAS ===
+
+function cambiarTab(tab, event) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('activo'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
   document.getElementById(`tab-${tab}`).classList.add('activo');
-  event.target.classList.add('activo');
-  
+  if (event && event.target) {
+    event.target.classList.add('activo');
+  } else {
+    // fallback: activar el botón correspondiente si no hay event
+    const btn = document.querySelector(`.tab-btn[onclick*="${tab}"]`);
+    if (btn) btn.classList.add('activo');
+  }
   if (tab === 'productos') {
     cargarSelectCategorias();
     mostrarProductos();
@@ -37,6 +44,7 @@ async function recargarControlStock() {
     mostrarCategorias();
   }
 }
+window.cambiarTab = cambiarTab;
 
 // === CATEGORÍAS ===
 document.getElementById('form-categoria').addEventListener('submit', async function(e) {
@@ -385,8 +393,18 @@ function logout() {
   }
 }
 
-// Cargar datos al iniciar
-if (verificarAutenticacion()) {
-  inicializarCategoriasDefault();
-  mostrarCategorias();
+// Inicializar pestaña por defecto y autenticación al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+  if (verificarAutenticacion()) {
+    inicializarCategoriasDefault();
+    cambiarTab('categorias');
+  }
+});
+
+// Funciones vacías para evitar errores si se usan los botones de exportar/importar
+function exportarDatos() {
+  alert('Función de exportar datos aún no implementada.');
+}
+function importarDatos() {
+  alert('Función de importar datos aún no implementada.');
 }
