@@ -137,7 +137,7 @@ function limpiarFormCategoria() {
 // === PRODUCTOS ===
 document.getElementById('form-producto').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const id = document.getElementById('prod-id').value;
+  const id = document.getElementById('prod-id').value ? parseInt(document.getElementById('prod-id').value) : null;
   const nombre = document.getElementById('prod-nombre').value.trim();
   const precio = document.getElementById('prod-precio').value;
   const categoria = document.getElementById('prod-categoria').value;
@@ -199,15 +199,22 @@ document.getElementById('form-producto').addEventListener('submit', async functi
       });
     } else {
       // Sin nueva imagen, obtener imagen anterior y guardar
+      console.log('📦 Buscando producto:', id, 'tipo:', typeof id);
       const productos = await DataManager.cargarProductos();
-      const prod = productos.find(p => p.id === id);
+      console.log('📦 Productos cargados:', productos.length);
+      
+      const prod = productos.find(p => {
+        console.log('🔍 Comparando:', p.id, '===', id, '=', p.id === id);
+        return p.id === id;
+      });
       
       if (!prod) {
-        console.error('❌ Producto no encontrado');
+        console.error('❌ Producto no encontrado. ID buscado:', id, 'Productos disponibles:', productos.map(p => ({ id: p.id, nombre: p.nombre })));
         mostrarMensaje('Producto no encontrado', 'error');
         return;
       }
 
+      console.log('✅ Producto encontrado:', prod);
       const resultado = await DataManager.editarProducto(id, nombre, precio, categoria, prod.imagen, descripcion);
       if (resultado) {
         console.log('✅ Producto actualizado sin cambio de imagen:', resultado);
