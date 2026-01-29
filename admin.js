@@ -296,17 +296,27 @@ async function editarProducto(id) {
   console.log('✅ Producto encontrado:', prod);
   
   await cargarSelectCategorias();
-  
+
   document.getElementById('prod-id').value = id;
   document.getElementById('prod-nombre').value = prod.nombre;
   document.getElementById('prod-precio').value = prod.precio;
-  document.getElementById('prod-categoria').value = prod.categoria;
+  // Asegurar que la categoría quede seleccionada correctamente
+  const selectCategoria = document.getElementById('prod-categoria');
+  selectCategoria.value = prod.categoria;
+  // Si por algún motivo no existe la opción, agregarla temporalmente
+  if (![...selectCategoria.options].some(opt => opt.value === prod.categoria)) {
+    const opt = document.createElement('option');
+    opt.value = prod.categoria;
+    opt.textContent = prod.categoria;
+    selectCategoria.appendChild(opt);
+    selectCategoria.value = prod.categoria;
+  }
   document.getElementById('prod-descripcion').value = prod.descripcion || '';
   document.getElementById('prod-preview').src = prod.imagen;
   document.getElementById('prod-preview').style.display = 'block';
   document.getElementById('btn-guardar-prod').textContent = 'Actualizar producto';
   document.getElementById('btn-cancelar-prod').style.display = 'block';
-  
+
   editandoProducto = id;
   cambiarTab('productos');
   window.scrollTo(0, 0);
