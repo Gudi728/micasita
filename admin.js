@@ -62,9 +62,97 @@ function logout() {
 }
 
 // Inicializar pestaña por defecto y autenticación al cargar la página
+
+// Renderizar lista de categorías en el admin
+async function renderizarCategorias() {
+  const lista = document.getElementById('lista-categorias');
+  if (!lista) return;
+  const categorias = await DataManager.cargarCategorias();
+  if (categorias.length === 0) {
+    lista.innerHTML = '<div class="sin-contenido">No hay categorías registradas.</div>';
+    return;
+  }
+  lista.innerHTML = categorias.map(cat => `
+    <div class="item-card">
+      <img src="${cat.imagen}" alt="${cat.nombre}" class="item-imagen">
+      <div class="item-titulo">${cat.nombre}</div>
+      <div class="btn-acciones">
+        <button class="btn-editar" onclick="editarCategoria(${cat.id})">Editar</button>
+        <button class="btn-eliminar" onclick="eliminarCategoria(${cat.id})">Eliminar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Lógica para editar categoría
+window.editarCategoria = async function(id) {
+  const categorias = await DataManager.cargarCategorias();
+  const cat = categorias.find(c => c.id === id);
+  if (!cat) return;
+  document.getElementById('cat-id').value = cat.id;
+  document.getElementById('cat-nombre').value = cat.nombre;
+  document.getElementById('cat-preview').src = cat.imagen;
+  document.getElementById('cat-preview').style.display = 'block';
+  document.getElementById('btn-guardar-cat').textContent = 'Guardar cambios';
+  document.getElementById('btn-cancelar-cat').style.display = '';
+};
+
+// Lógica para eliminar categoría
+window.eliminarCategoria = async function(id) {
+  if (!confirm('¿Seguro que deseas eliminar esta categoría?')) return;
+  await DataManager.eliminarCategoria(id);
+  renderizarCategorias();
+};
+
+// Limpiar formulario de categoría
+window.limpiarFormCategoria = function() {
+  document.getElementById('cat-id').value = '';
+  document.getElementById('cat-nombre').value = '';
+  document.getElementById('cat-imagen').value = '';
+  document.getElementById('cat-preview').src = '';
+  document.getElementById('cat-preview').style.display = 'none';
+  document.getElementById('btn-guardar-cat').textContent = 'Agregar categoría';
+  document.getElementById('btn-cancelar-cat').style.display = 'none';
+};
+
+// Guardar o editar categoría
+document.getElementById('form-categoria').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const id = document.getElementById('cat-id').value;
+  const nombre = document.getElementById('cat-nombre').value.trim();
+  let imagen = document.getElementById('cat-preview').src;
+  // Si se seleccionó una nueva imagen, usar la del input
+  const fileInput = document.getElementById('cat-imagen');
+  if (fileInput.files && fileInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = async function(event) {
+      imagen = event.target.result;
+      await guardarCategoria(id, nombre, imagen);
+    };
+    reader.readAsDataURL(fileInput.files[0]);
+    return;
+  }
+  await guardarCategoria(id, nombre, imagen);
+});
+
+async function guardarCategoria(id, nombre, imagen) {
+  if (!nombre || !imagen) {
+    alert('Nombre e imagen son obligatorios');
+    return;
+  }
+  if (id) {
+    await DataManager.editarCategoria(Number(id), nombre, imagen);
+  } else {
+    await DataManager.agregarCategoria(nombre, imagen);
+  }
+  limpiarFormCategoria();
+  renderizarCategorias();
+}
+
+// Inicializar pestaña por defecto y autenticación al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
   if (verificarAutenticacion()) {
-    inicializarCategoriasDefault();
+    inicializarCategoriasDefault().then(renderizarCategorias);
     cambiarTab('categorias');
   }
 });
