@@ -400,7 +400,10 @@ async function mostrarControlCaja() {
         </div>
       </div>
     `;
-      // Hacer global la función para el botón
+      // (La función global anularMovimientoCaja se define al final del archivo)
+  // Definir funciones globales solo si DataManager está disponible
+  window.addEventListener('DOMContentLoaded', () => {
+    if (typeof DataManager !== 'undefined') {
       window.anularMovimientoCaja = async function(movimientoId) {
         if (!confirm('¿Seguro que deseas anular este movimiento de caja? Esta acción no se puede deshacer.')) return;
         const ok = await DataManager.anularMovimientoCaja(movimientoId);
@@ -411,6 +414,20 @@ async function mostrarControlCaja() {
           mostrarMensaje('No se pudo anular el movimiento', 'error');
         }
       };
+      window.anularVenta = async function(ventaId) {
+        if (confirm('¿Seguro que quieres anular esta venta?')) {
+          const ok = await DataManager.anularVenta(ventaId);
+          if (ok) {
+            mostrarMensaje('Venta anulada correctamente', 'exito');
+            await mostrarHistorialVentas();
+            await recargarControlStock && recargarControlStock();
+          } else {
+            mostrarMensaje('Error al anular la venta', 'error');
+          }
+        }
+      };
+    }
+  });
   } catch (error) {
     console.error('❌ Error al cargar control de caja:', error);
     const contenedor = document.getElementById('control-caja');

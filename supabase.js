@@ -1,17 +1,26 @@
-    // Anular (eliminar) movimiento de caja por id
-    async anularMovimientoCaja(movimientoId) {
-      try {
-        const { error } = await supabaseClient
-          .from('movimientos_caja')
-          .delete()
-          .eq('id', movimientoId);
-        if (error) throw error;
-        return true;
-      } catch (error) {
-        console.error('Error al anular movimiento de caja:', error);
-        return false;
-      }
-    },
+// Configuración de Supabase
+const SUPABASE_URL = 'https://bondnynacnzvwfojkrpc.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_15SL0Y_XssCN9EBHk3pP9g_LRwyeiCJ';
+
+// Inicializar cliente de Supabase
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// DataManager actualizado para usar Supabase
+window.DataManager = {
+  // Anular (eliminar) movimiento de caja por id
+  async anularMovimientoCaja(movimientoId) {
+    try {
+      const { error } = await supabaseClient
+        .from('movimientos_caja')
+        .delete()
+        .eq('id', movimientoId);
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error al anular movimiento de caja:', error);
+      return false;
+    }
+  },
   // Anular (eliminar) una venta por ID
   async anularVenta(ventaId) {
     try {
@@ -26,15 +35,6 @@
       return false;
     }
   },
-// Configuración de Supabase
-const SUPABASE_URL = 'https://bondnynacnzvwfojkrpc.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_15SL0Y_XssCN9EBHk3pP9g_LRwyeiCJ';
-
-// Inicializar cliente de Supabase
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// DataManager actualizado para usar Supabase
-const DataManager = {
   // ========== CATEGORÍAS ==========
   
   // Cargar todas las categorías desde Supabase

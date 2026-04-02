@@ -69,10 +69,10 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// Funciones vacías para evitar errores si se usan los botones de exportar/importar
-function exportarDatos() {
-  alert('Función de exportar datos aún no implementada.');
-}
-function importarDatos() {
-  alert('Función de importar datos aún no implementada.');
-}
+  // Funciones eliminadas para evitar errores si se usan los botones de exportar/importar
+  // function exportarDatos() {
+  //   alert('Función de exportar datos aún no implementada.');
+  // }
+  // function importarDatos() {
+  //   alert('Función de importar datos aún no implementada.');
+  // }

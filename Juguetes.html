@@ -30,8 +30,9 @@
         <img src='imagenes/logo.jpg' alt='Logo Micasita' class='logo'>
       </button>
       <nav class='main-nav' aria-label='Navegación principal'>
-        <button class='nav-btn' onclick=\"mostrarVentana('sobre nosotros')\">Sobre nosotros</button>
-        <button class='nav-btn' onclick=\"mostrarVentana('redes sociales')\">Redes sociales</button>
+        <div id="menu-categorias" class="menu-categorias"></div>
+        <button class='nav-btn' onclick="mostrarVentana('sobre nosotros')">Sobre nosotros</button>
+        <button class='nav-btn' onclick="mostrarVentana('redes sociales')">Redes sociales</button>
         <a href='admin.html' class='nav-btn' style='text-decoration: none; display: flex; align-items: center; justify-content: center;'> Admin</a>
       </nav>
     </div>
@@ -43,11 +44,12 @@
     <section class='productos' id='productos-container'></section>
   </main>
 
+
   <div id='modal-sobre nosotros' class='modal' role='dialog' aria-hidden='true' aria-labelledby='titulo-sobre'>
     <div class='modal-content'>
       <h2 id='titulo-sobre'>Sobre nosotros</h2>
       <p>'Micasita es un emprendimiento multirubro creado con amor y dedicación. Valoramos cada visita, mensaje y compra porque nos motivan a crecer. Detrás de este proyecto hay sueños y esfuerzo, y queremos que sientas que Micasita también es tu casita.'</p>
-      <button class='btn-close' onclick=\"cerrarVentana('sobre nosotros')\">Cerrar</button>
+      <button class='btn-close' onclick="cerrarVentana('sobre nosotros')">Cerrar</button>
     </div>
   </div>
 
@@ -56,9 +58,10 @@
       <h2 id='titulo-redes'>Redes sociales</h2>
       <p>Instagram: mi.casita01</p>
       <p>WhatsApp: 3533439355</p>
-      <button class='btn-close' onclick=\"cerrarVentana('redes sociales')\">Cerrar</button>
+      <button class='btn-close' onclick="cerrarVentana('redes sociales')">Cerrar</button>
     </div>
   </div>
+
 
   <footer class='site-footer'>
     <div class='wrap footer-inner'>
@@ -92,6 +95,36 @@
       modal.classList.remove('modal-open');
       document.body.style.overflow = '';
     }
+
+    // Cargar menú de categorías dinámicamente y actualizar en tiempo real
+    async function cargarMenuCategorias() {
+      const contenedor = document.getElementById('menu-categorias');
+      if (!contenedor) return;
+      try {
+        const categorias = await DataManager.cargarCategorias();
+        if (!categorias || categorias.length === 0) {
+          contenedor.innerHTML = '<span style="color:#999">Sin categorías</span>';
+          return;
+        }
+        contenedor.innerHTML = categorias.map(cat => {
+          const actual = cat.nombre === CATEGORIA_NOMBRE ? 'style="font-weight:bold;text-decoration:underline"' : '';
+          const archivo = cat.nombre.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/ /g, '') + '.html';
+          return `<a href="${archivo}" class="nav-btn" ${actual}>${cat.nombre}</a>`;
+        }).join('');
+      } catch (e) {
+        contenedor.innerHTML = '<span style="color:#c00">Error cargando categorías</span>';
+      }
+    }
+
+    // Suscribirse a cambios en categorías para menú en tiempo real
+    function escucharCategoriasMenu() {
+      if (window.DataManager && typeof window.DataManager.onCategoriasChange === 'function') {
+        window.DataManager.onCategoriasChange(() => {
+          cargarMenuCategorias();
+        });
+      }
+    }
+
     async function cargarProductos() {
       const contenedor = document.getElementById('productos-container');
       const productos = await DataManager.obtenerProductosPorCategoria(CATEGORIA_NOMBRE);
@@ -111,7 +144,29 @@
         </div>
       `).join('');
     }
-    document.addEventListener('DOMContentLoaded', cargarProductos);
+
+    // Suscribirse a cambios en productos para actualización en tiempo real
+    function escucharProductosCategoria() {
+      if (window.DataManager && typeof window.DataManager.onProductosChange === 'function') {
+        window.DataManager.onProductosChange((payload) => {
+          // Solo recargar si el producto pertenece a la categoría actual
+          if (payload && payload.new && payload.new.categoria === CATEGORIA_NOMBRE) {
+            cargarProductos();
+          }
+          // También recargar si se eliminó un producto de esta categoría
+          if (payload && payload.old && payload.old.categoria === CATEGORIA_NOMBRE) {
+            cargarProductos();
+          }
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      cargarMenuCategorias();
+      cargarProductos();
+      escucharCategoriasMenu();
+      escucharProductosCategoria();
+    });
   </script>
 </body>
 </html>

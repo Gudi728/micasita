@@ -25,6 +25,7 @@
     <div class="wrap header-inner">
       <button class="logo-btn" onclick="irInicio()"><img src="imagenes/logo.jpg" alt="Logo" class="logo"></button>
       <nav class="main-nav">
+        <div id="menu-categorias" class="menu-categorias"></div>
         <button class="nav-btn" onclick="mostrarVentana('sobre nosotros')">Sobre nosotros</button>
         <button class="nav-btn" onclick="mostrarVentana('redes sociales')">Redes sociales</button>
         <a href="admin.html" class="nav-btn" style="text-decoration: none;"> Admin</a>
@@ -63,20 +64,81 @@
     const CATEGORIA_NOMBRE = 'Blanquería';
     function irInicio() { window.location.href = 'index.html'; }
     function mostrarVentana(tipo) {
-      const m = document.getElementById('modal-' + tipo);
-      if(m) { m.setAttribute('aria-hidden', 'false'); m.classList.add('modal-open'); document.body.style.overflow = 'hidden'; }
+      const id = 'modal-' + tipo;
+      const modal = document.getElementById(id);
+      if (!modal) return;
+      modal.setAttribute('aria-hidden', 'false');
+      modal.classList.add('modal-open');
+      document.body.style.overflow = 'hidden';
     }
     function cerrarVentana(tipo) {
-      const m = document.getElementById('modal-' + tipo);
-      if(m) { m.setAttribute('aria-hidden', 'true'); m.classList.remove('modal-open'); document.body.style.overflow = ''; }
+      const id = 'modal-' + tipo;
+      const modal = document.getElementById(id);
+      if (!modal) return;
+      modal.setAttribute('aria-hidden', 'true');
+      modal.classList.remove('modal-open');
+      document.body.style.overflow = '';
     }
+
+    // Menú de categorías dinámico
+    async function cargarMenuCategorias() {
+      const contenedor = document.getElementById('menu-categorias');
+      if (!contenedor) return;
+      const categorias = await DataManager.cargarCategorias();
+      contenedor.innerHTML = categorias.map(cat => {
+        const actual = cat.nombre === CATEGORIA_NOMBRE ? 'style="font-weight:bold;text-decoration:underline"' : '';
+        const archivo = cat.nombre.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/ /g, '') + '.html';
+        return `<a href="${archivo}" class="nav-btn" ${actual}>${cat.nombre}</a>`;
+      }).join('');
+    }
+
+    function escucharCategoriasMenu() {
+      if (window.DataManager && typeof window.DataManager.onCategoriasChange === 'function') {
+        window.DataManager.onCategoriasChange(() => {
+          cargarMenuCategorias();
+        });
+      }
+    }
+
     async function cargarProductos() {
-      const c = document.getElementById('productos-container');
-      const p = await DataManager.obtenerProductosPorCategoria(CATEGORIA_NOMBRE);
-      if(p.length === 0) { c.innerHTML = '<div class="sin-productos">No hay productos</div>'; return; }
-      c.innerHTML = p.map(prod => `<div class="producto-card"><img src="${prod.imagen}" alt="${prod.nombre}" class="producto-imagen"><div class="producto-contenido"><h3 class="producto-titulo">${prod.nombre}</h3><p class="producto-precio">$${parseFloat(prod.precio).toFixed(2)}</p><p class="producto-descripcion">${prod.descripcion || ''}</p><a href="https://wa.me/543533518390?text=Consulta:%20${encodeURIComponent(prod.nombre)}" target="_blank" class="btn-consultar">Consultar</a></div></div>`).join('');
+      const contenedor = document.getElementById('productos-container');
+      const productos = await DataManager.obtenerProductosPorCategoria(CATEGORIA_NOMBRE);
+      if (productos.length === 0) {
+        contenedor.innerHTML = '<div class="sin-productos">No hay productos en esta categoría aún</div>';
+        return;
+      }
+      contenedor.innerHTML = productos.map(prod => `
+        <div class="producto-card">
+          <img src="${prod.imagen}" alt="${prod.nombre}" class="producto-imagen">
+          <div class="producto-contenido">
+            <h3 class="producto-titulo">${prod.nombre}</h3>
+            <p class="producto-precio">$${parseFloat(prod.precio).toFixed(2)}</p>
+            <p class="producto-descripcion">${prod.descripcion || ''}</p>
+            <a href="https://wa.me/543533518390?text=Hola%20tengo%20una%20consulta%20sobre:%20${encodeURIComponent(prod.nombre)}" target="_blank" class="btn-consultar">Consultar</a>
+          </div>
+        </div>
+      `).join('');
     }
-    document.addEventListener('DOMContentLoaded', cargarProductos);
+
+    function escucharProductosCategoria() {
+      if (window.DataManager && typeof window.DataManager.onProductosChange === 'function') {
+        window.DataManager.onProductosChange((payload) => {
+          if (payload && payload.new && payload.new.categoria === CATEGORIA_NOMBRE) {
+            cargarProductos();
+          }
+          if (payload && payload.old && payload.old.categoria === CATEGORIA_NOMBRE) {
+            cargarProductos();
+          }
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      cargarMenuCategorias();
+      cargarProductos();
+      escucharCategoriasMenu();
+      escucharProductosCategoria();
+    });
   </script>
 </body>
 </html>

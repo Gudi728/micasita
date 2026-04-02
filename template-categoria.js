@@ -195,26 +195,33 @@ function crearPaginaCategoria(nombreCategoria) {
       document.body.style.overflow = '';
     }
 
-    function cargarProductos() {
-      const contenedor = document.getElementById('productos-container');
-      const productos = DataManager.obtenerProductosPorCategoria(CATEGORIA_NOMBRE);
 
-      if (productos.length === 0) {
+    async function cargarProductos() {
+      const contenedor = document.getElementById('productos-container');
+      let productos = [];
+      try {
+        productos = await DataManager.obtenerProductosPorCategoria(CATEGORIA_NOMBRE);
+      } catch (e) {
+        contenedor.innerHTML = '<div class="sin-productos">Error al cargar productos</div>';
+        return;
+      }
+
+      if (!productos || productos.length === 0) {
         contenedor.innerHTML = '<div class="sin-productos">No hay productos en esta categoría aún</div>';
         return;
       }
 
-      contenedor.innerHTML = productos.map(prod => \`
+      contenedor.innerHTML = productos.map(prod => `
         <div class="producto-card">
-          <img src="\${prod.imagen}" alt="\${prod.nombre}" class="producto-imagen">
+          <img src="${prod.imagen}" alt="${prod.nombre}" class="producto-imagen">
           <div class="producto-contenido">
-            <h3 class="producto-titulo">\${prod.nombre}</h3>
-            <p class="producto-precio">$\${parseFloat(prod.precio).toFixed(2)}</p>
-            <p class="producto-descripcion">\${prod.descripcion || ''}</p>
-            <a href="https://wa.me/543533518390?text=Hola%20tengo%20una%20consulta%20sobre:%20\${encodeURIComponent(prod.nombre)}" target="_blank" class="btn-consultar">Consultar</a>
+            <h3 class="producto-titulo">${prod.nombre}</h3>
+            <p class="producto-precio">$${parseFloat(prod.precio).toFixed(2)}</p>
+            <p class="producto-descripcion">${prod.descripcion || ''}</p>
+            <a href="https://wa.me/543533518390?text=Hola%20tengo%20una%20consulta%20sobre:%20${encodeURIComponent(prod.nombre)}" target="_blank" class="btn-consultar">Consultar</a>
           </div>
         </div>
-      \`).join('');
+      `).join('');
     }
 
     document.addEventListener('DOMContentLoaded', cargarProductos);
