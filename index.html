@@ -10,20 +10,23 @@
 <body>
   </head>
   <body>
-    <header class="site-header">
-      <div class="wrap header-inner">
-        <button class="logo-btn" aria-label="Ir al inicio" onclick="irInicio()">
-          <img src="imagenes/logo.jpg" alt="Logo Micasita" class="logo">
+    <header class="site-header nuevo-header">
+      <div class="header-bar">
+        <div class="logo-area">
+          <button class="logo-btn" aria-label="Ir al inicio" onclick="irInicio()">
+            <img src="imagenes/logo.jpg" alt="Logo Micasita" class="logo">
+          </button>
+          <span class="brand-title"><span class="script">Micasita</span> <span class="negrita">MULTIRUBRO</span></span>
+        </div>
+        <button class="menu-toggle" aria-label="Abrir menú" onclick="toggleMenu()">
+          <span class="menu-icon"></span>
         </button>
-        <nav class="main-nav" aria-label="Navegación principal">
+        <nav class="main-nav nuevo-nav" aria-label="Navegación principal">
           <button class="nav-btn" onclick="mostrarVentana('sobre nosotros')">Sobre nosotros</button>
           <button class="nav-btn" onclick="mostrarVentana('redes sociales')">Redes sociales</button>
           <button class="nav-btn" onclick="abrirUbicacion()">📍 Ubicación</button>
-          <a href="admin.html" class="nav-btn" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">⚙️ Admin</a>
+          <a href="admin.html" class="nav-btn admin-link">⚙️ Admin</a>
         </nav>
-      </div>
-      <div class="encabezado">
-        <h1><span class="script">Micasita</span> <span class="negrita">MULTIRUBRO</span></h1>
       </div>
     </header>
 
@@ -76,9 +79,156 @@
       </div>
     </footer>
 
+    <style>
+      .nuevo-header {
+        background: linear-gradient(90deg, #f358ba 0%, #ffb347 100%);
+        box-shadow: 0 2px 12px rgba(243,88,186,0.08);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .header-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0.5rem 1.5rem;
+      }
+      .logo-area {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .logo-btn {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+      }
+      .logo {
+        width: 54px;
+        height: 54px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        object-fit: cover;
+      }
+      .brand-title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 8px rgba(243,88,186,0.12);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .main-nav.nuevo-nav {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        transition: max-height 0.3s;
+      }
+      .nav-btn, .admin-link {
+        background: rgba(255,255,255,0.13);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 0.7rem 1.2rem;
+        font-size: 1rem;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        box-shadow: 0 1px 4px rgba(243,88,186,0.07);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .nav-btn:hover, .admin-link:hover {
+        background: #fff;
+        color: #f358ba;
+        box-shadow: 0 2px 8px rgba(243,88,186,0.13);
+      }
+      .admin-link {
+        font-size: 1.1rem;
+        padding-left: 1.1rem;
+        padding-right: 1.1rem;
+      }
+      .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+        margin-left: 1rem;
+      }
+      .menu-icon {
+        width: 28px;
+        height: 3px;
+        background: #fff;
+        display: block;
+        border-radius: 2px;
+        position: relative;
+      }
+      .menu-icon::before, .menu-icon::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        width: 28px;
+        height: 3px;
+        background: #fff;
+        border-radius: 2px;
+        transition: 0.3s;
+      }
+      .menu-icon::before {
+        top: -9px;
+      }
+      .menu-icon::after {
+        top: 9px;
+      }
+      @media (max-width: 900px) {
+        .header-bar {
+          flex-direction: column;
+          align-items: stretch;
+          padding: 0.5rem 0.5rem;
+        }
+        .main-nav.nuevo-nav {
+          margin-top: 0.5rem;
+        }
+      }
+      @media (max-width: 700px) {
+        .main-nav.nuevo-nav {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 0.3rem;
+          max-height: 0;
+          overflow: hidden;
+          background: linear-gradient(90deg, #f358ba 0%, #ffb347 100%);
+          border-radius: 0 0 16px 16px;
+          box-shadow: 0 4px 16px rgba(243,88,186,0.10);
+          margin-top: 0;
+        }
+        .main-nav.nuevo-nav.open {
+          max-height: 300px;
+          padding-bottom: 0.5rem;
+        }
+        .menu-toggle {
+          display: block;
+        }
+      }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
     <script>
+      function toggleMenu() {
+        const nav = document.querySelector('.main-nav.nuevo-nav');
+        nav.classList.toggle('open');
+      }
       // Mapeo de emojis por categoría
       const emojiPorCategoria = {
         'Electrónica': '🔌',
