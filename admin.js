@@ -150,9 +150,10 @@ async function guardarCategoria(id, nombre, imagen) {
 }
 
 // Inicializar pestaña por defecto y autenticación al cargar la página
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
   if (verificarAutenticacion()) {
-    inicializarCategoriasDefault().then(renderizarCategorias);
+    await inicializarCategoriasDefault();
+    await renderizarCategorias();
     cambiarTab('categorias');
   }
 });
