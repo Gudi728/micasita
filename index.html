@@ -246,32 +246,12 @@
         const categorias = await DataManager.cargarCategorias();
         const contenedor = document.getElementById('seccion-categorias');
         
-        if (categorias.length === 0) {
-          // Mostrar categorías por defecto si no hay datos
-          const categoriasDefault = [
-            { nombre: 'Electrónica' },
-            { nombre: 'Juguetes' },
-            { nombre: 'Útiles' },
-            { nombre: 'Hogar' },
-            { nombre: 'Bazar' },
-            { nombre: 'Blanquería' },
-            { nombre: 'Freidoras de aire' },
-            { nombre: 'Droguería' }
-          ];
-          contenedor.innerHTML = categoriasDefault.map(cat => `
-            <a class="card card-default" href="electronica.html?categoria=${encodeURIComponent(cat.nombre)}">
-              <span class="card-emoji">${emojiPorCategoria[cat.nombre] || '📦'}</span>
-              <span class="card-nombre">${cat.nombre}</span>
-            </a>
-          `).join('');
-        } else {
-          contenedor.innerHTML = categorias.map(cat => `
-            <a class="card" href="electronica.html?categoria=${encodeURIComponent(cat.nombre)}" style="background-image: url('${cat.imagen}'); background-size: cover; background-position: center;">
-              <span class="card-emoji">${emojiPorCategoria[cat.nombre] || '📦'}</span>
-              <span class="card-nombre">${cat.nombre}</span>
-            </a>
-          `).join('');
-        }
+        contenedor.innerHTML = categorias.map(cat => `
+          <a class="card" href="electronica.html?categoria=${encodeURIComponent(cat.nombre)}" style="background-image: url('${cat.imagen}'); background-size: cover; background-position: center;">
+            <span class="card-emoji">${emojiPorCategoria[cat.nombre] || '📦'}</span>
+            <span class="card-nombre">${cat.nombre}</span>
+          </a>
+        `).join('');
       }
 
       function irInicio() { window.location.href = 'index.html'; }
